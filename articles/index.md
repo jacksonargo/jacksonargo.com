@@ -6,6 +6,6 @@ You can find all these articles in my github repo for this site. If you see anyt
 
 1. [Flow Chart for Extending Filesystems with LVM](/articles/lvm-flowchart.html)
 
-2. [Managing File Pools with Bacula](/articles/managing-file-pools.md)
+2. [Managing File Pools with Bacula](/articles/managing-file-pools.html)
 
 3. [Test Article 3](/articles/index.html)

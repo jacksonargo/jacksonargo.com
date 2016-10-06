@@ -63,7 +63,11 @@ class Page
 
  ## Return a link to the page.
  def link
-  @target.sub /^#{$public_html}/, ''
+  if @title == "index"
+   File.dirname(@target).sub(/^#{$public_html}/, '') + "/"
+  else
+   @target.sub /^#{$public_html}/, ''
+  end
  end
 
  def to_s

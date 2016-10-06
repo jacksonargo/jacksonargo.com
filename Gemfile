@@ -7,4 +7,4 @@ gem "octokit", "~> 4.3"
 gem "json", "~> 2.0"
 
 ## FileUtils to move files everywhere
-gem "octokit", "~> 0.7"
+gem "fileutils", "~> 0.7"

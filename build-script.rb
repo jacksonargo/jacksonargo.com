@@ -45,7 +45,7 @@ Find.find("src/markdown") do |in_file|
 
  ## Rename the output file to .html
  out_file = in_file.sub /.md$/, ".html"
- out_file = in_file.sub /^src\/markdown/, "public_html"
+ out_file = out_file.sub /^src\/markdown/, "public_html"
 
  ## Convert markdown to html
  File.open in_file do |f|

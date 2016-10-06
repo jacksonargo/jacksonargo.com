@@ -23,7 +23,6 @@ class Page
   @date = File.mtime in_file
   @section = source2section in_file
   @@instance_collector << self
-  puts "Loaded new page #{@title}"
  end
 
  def source2title(in_file)
@@ -93,14 +92,17 @@ class Page
    sections[page.section] = true
   end
   array = []
-  sections.each_key { |k| a << k }
+  sections.each_key { |k| array << k if k != '' }
   array
  end
 
  ## Return all the pages that are part of a section
  def self.section(section)
   p = []
-  @@instance_collector.each { |x| p << x if x.section == section }
+  @@instance_collector.each do |x|
+   next if x.is_index?
+   p << x if x.section == section
+  end
   return p
  end
 end
@@ -121,8 +123,6 @@ def render_site
   ## Only operate on markdown
   next unless in_file =~ /.md$/
   Page.new in_file
-  puts "Current pages:"
-  Page.all_pages.each { |page| puts " - #{page}" }
  end
  
  ## Make the sub directories

@@ -1,0 +1,27 @@
+{
+  "name": "jacksonargo.com",
+  "homepage": "https://github.com/jacksonargo/jacksonargo.com",
+  "authors": [
+    "Jackson Argo <ignition.argo@gmail.com>"
+  ],
+  "description": "My personal website",
+  "main": "index.html",
+  "keywords": [
+    "bower",
+    "angular",
+    "bootstrap"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "angularjs#^1.5.8",
+    "bootstrap": "^3.3.7"
+  }
+}

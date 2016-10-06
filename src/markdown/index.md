@@ -1,7 +1,7 @@
 # Jackson Argo
 ## Linux Administrator and General Nerd
 
-![alt text](images/me.png)
+![alt text](assets/images/me.png)
 
 ### Bio
 

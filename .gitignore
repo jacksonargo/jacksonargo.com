@@ -1,2 +1,4 @@
 public_html
 Gemfile.lock
+node_modules
+bower_components

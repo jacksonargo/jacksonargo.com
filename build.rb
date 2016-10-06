@@ -52,6 +52,10 @@ class Page
   end
  end
 
+ def refresh_content
+  @content = md2html @source
+ end
+
  ## Check if this page is an index
  def is_index?
   @source =~ /\/index.md$/
@@ -104,6 +108,14 @@ class Page
    p << x if x.section == section
   end
   return p
+ end
+
+ ## Find the page with the matching title
+ def self.with_title(title)
+  @@instance_collector.each do |x|
+   return x if x.title == title
+  end
+  return nil
  end
 end
 

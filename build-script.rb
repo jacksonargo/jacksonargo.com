@@ -15,9 +15,13 @@ pre_template = ERB.new File.read("src/templates/pre.html.erb"), 0, '-'
 post_template = ERB.new File.read("src/templates/post.html.erb"), 0, '-'
 @post_html = post_template.result
 
+## Cleat the existing public_html directory
+
+FileUtils::rm_rf public_html
+FileUtils::mkdir_p public_html
+
 ## Symlink the needful
 
-Dir.mkdir public_html
 FileUtils::symlink "../assets", public_html
 FileUtils::symlink "../bower_components", public_html
 

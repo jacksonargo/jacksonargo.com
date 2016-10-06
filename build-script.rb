@@ -4,14 +4,14 @@ require 'find'
 require 'json'
 require 'octokit'
 require 'fileutils'
+require 'erb'
 
-File.open("src/templates/pre.html") do |f|
- @pre_html = f.read
-end
+## Load the pre and post templates
 
-File.open("src/templates/post.html") do |f|
- @post_html = f.read
-end
+pre_template = ERB.new File.read("src/templates/pre.html.erb"), 0, '-'
+@pre_html = pre_template.result
+post_template = ERB.new File.read("src/templates/post.html.erb"), 0, '-'
+@post_html = post_template.result
 
 ## Make the public_html directories and copy the assets
 

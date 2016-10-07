@@ -7,6 +7,8 @@ require 'fileutils'
 require 'erb'
 
 $public_html = "public_html"
+$mardown_src = "src/markdown"
+$template_src = "src/templates"
 
 ## Page class stores data for each markdown file.
 class Page
@@ -33,11 +35,11 @@ class Page
 
  def source2target(in_file)
   out_file = in_file.sub /.md$/, ".html"
-  out_file.sub /^src\/markdown/, $public_html
+  out_file.sub /^#{$mardown_src}/, $public_html
  end
 
  def source2section(in_file)
-  section = File.dirname(in_file).sub /^src\/markdown/, ''
+  section = File.dirname(in_file).sub /^#{$mardown_src}/, ''
   section.sub /^\//, ''
  end
 
@@ -78,9 +80,9 @@ class Page
  def render
   b = binding
   ## Load the templates
-  pre_template  = ERB.new(File.read("src/templates/pre.html.erb"), 0, '-')
-  main_template = ERB.new(File.read("src/templates/main.html.erb"), 0, '-')
-  post_template = ERB.new(File.read("src/templates/post.html.erb"), 0, '-')
+  pre_template  = ERB.new(File.read("#{$template_src}/pre.html.erb"), 0, '-')
+  main_template = ERB.new(File.read("#{$template_src}/main.html.erb"), 0, '-')
+  post_template = ERB.new(File.read("#{$template_src}/post.html.erb"), 0, '-')
   ## Generate the html page
   pre = pre_template.result b
   post = post_template.result b
@@ -142,11 +144,11 @@ def render_site
  end
  
  ## Make the sub directories
- Find.find("src/markdown") do |src_dir|
+ Find.find($mardown_src) do |src_dir|
   ## We only care about directories
   next unless File.directory? src_dir
   # Convert the path name
-  target_dir = src_dir.sub /^src\/(markdown|assets)/, $public_html
+  target_dir = src_dir.sub /^#{$mardown_src}/, $public_html
   # Create the directory
   FileUtils::mkdir_p target_dir
  end

@@ -20,6 +20,7 @@ class Page
  def initialize(in_file)
   @source = in_file
   @title = source2title in_file
+  @tags = source2tags in_file
   @target = source2target in_file
   @content = md2html in_file
   @date = File.mtime in_file
@@ -29,8 +30,16 @@ class Page
 
  def source2title(in_file)
   title = File.basename in_file
-  title = title.sub /.md$/, ''
-  title.gsub /_/, ' '
+  title = title.sub /.md$/, '' # Remove the extension
+  title = title.sub /#.*/, ''  # Remove the tags
+  title.gsub /_/, ' '          # Convert underscore to spaces
+ end
+
+ def source2tags(in_file)
+  tags = File.basename in_file
+  tags = tags.sub /.md$/, '' # Remove the extension
+  tags = tags.split '#'      # Separate the tags
+  tags.drop 1                # Drop the title
  end
 
  def source2target(in_file)

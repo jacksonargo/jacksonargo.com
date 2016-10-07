@@ -1,4 +1,3 @@
-# LVM Flow chart
 A flow chart for changing disk space via lvm.
 
 ## Adding space to a filesystem

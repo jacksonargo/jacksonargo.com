@@ -47,7 +47,11 @@ class Page
 
  def source2target(in_file, section)
   out_file = File.basename(in_file).sub /.md$/, ".html"
-  "#{$public_html}/#{section}/#{out_file}"
+  if section != nil
+   "#{$public_html}/#{section}/#{out_file}"
+  else
+   "#{$public_html}/#{out_file}"
+  end
  end
 
  def source2section(in_file)

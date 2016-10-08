@@ -27,21 +27,33 @@
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapse-1">
       <ul class="nav navbar-nav">
+
+<!-- Home -->
+
 <% if link == "/" %>
         <li class="active"><a href="#">Home<span class="sr-only">(current)</span></a></li>
 <% else %>
         <li><a href="/">Home</a></li>
 <% end %>
+
+<!-- Resume -->
+
 <% if link == "/Resume.html" %>
         <li class="active"><a href="#">Resume<span class="sr-only">(current)</span></a></li>
 <% else %>
         <li><a href="/Resume.html">Resume</a></li>
 <% end %>
+
+<!--- Public Key -->
+
 <% if link == "/Public_Key.html" %>
         <li class="active"><a href="#">Public Key<span class="sr-only">(current)</span></a></li>
 <% else %>
         <li><a href="/Public_Key.html">Public Key</a></li>
 <% end %>
+
+<!-- Dropdown for Articles -->
+
 <% Page.all_sections.each do |section| %>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= section %><span class="caret"></span></a>
@@ -52,7 +64,22 @@
           </ul>
         </li>
 <% end %>
+
+<!--Dropdown for slide presentations -->
+
+<li class="dropdown">
+ <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= section %><span class="caret"></span></a>
+ <ul class="dropdown-menu">
+  <li><a href=/assets/slides/2016/04/28/Access_Control.pdf>Access Control</a></li>
+  <li><a href=/assets/slides/2016/01/14/Abstracting_For_Automation.html>Abstracting for Automation</a></li>
+  <li><a href=/assets/slides/2015/11/18/Introduction_To_The_Linux_Kernel.html>Introduction to the Linux Kernel</a></li>
+ </ul>
+</li>
+
       </ul>
+
+<!--- Right side of navbar -->
+
       <ul class="nav navbar-nav navbar-right">
         <li><a href="https://github.com/jacksonargo">Github</a></li>
         <li><a href="https://github.com/jacksonargo/jacksonargo.com">Clone Me!</a></li>

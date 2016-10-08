@@ -126,6 +126,7 @@ class Page
   pre = pre_template.result b
   post = post_template.result b
   main = main_template.result b
+  FileUtils::mkdir_p File.dirname @target
   File.open(@target, "w") { |f| f.write pre + main + post }
  end
 
@@ -162,49 +163,66 @@ class Page
   end
   return nil
  end
+
+ ## Generate all pages
+ def self.read_all
+  ## Load the data for the pages
+  Find.find($markdown_src) do |in_file|
+   ## Only operate on files
+   next unless File.file? in_file
+   ## Only operate on markdown
+   next unless in_file =~ /.md$/
+   Page.new in_file
+  end
+ end
+
+ ## Render all pages
+ def self.render_all
+  @@instance_collector.each { |p| p.render }
+ end
 end
 
-def render_site
- ## Clear the existing public_html directory
- FileUtils::rm_rf $public_html
- FileUtils::mkdir_p $public_html
- 
- ## Symlink the needful
- FileUtils::symlink "../assets", $public_html
- FileUtils::symlink "../bower_components", $public_html
- 
- ## Load/initialize the cache
- if File.exists? $cache_file
-  $cache = YAML::load_file $cache_file
- else
-  FileUtils::mkdir_p File.dirname($cache_file)
-  $cache = {}
+class Cache
+ ## Read the cache file
+ def self.read(cache_file)
+  return {} unless File.exists? cache_file
+  YAML::load_file cache_file
  end
 
- ## Load the data for the pages
- Find.find("src/markdown") do |in_file|
-  ## Only operate on files
-  next unless File.file? in_file
-  ## Only operate on markdown
-  next unless in_file =~ /.md$/
-  Page.new in_file
- end
- 
- ## Make the sub directories
- Find.find($markdown_src) do |src_dir|
-  ## We only care about directories
-  next unless File.directory? src_dir
-  # Convert the path name
-  target_dir = src_dir.sub /^#{$markdown_src}/, $public_html
-  # Create the directory
-  FileUtils::mkdir_p target_dir
- end
- 
- ## Generare each page
- Page.all_pages.each { |page| page.render }
- 
  ## Save the cache file
- File.open($cache_file, "w") { |f| f.write YAML::dump($cache) }
+ def self.write(cache_file, cache)
+  FileUtils::mkdir_p File.dirname(cache_file)
+  File.write cache_file, YAML::dump(cache)
+ end
 end
 
-render_site
+class Site
+ def self.init_public_html
+  ## Clear the existing public_html directory
+  FileUtils::rm_rf $public_html
+  FileUtils::mkdir_p $public_html
+  
+  ## Symlink the needful
+  FileUtils::symlink "../assets", $public_html
+  FileUtils::symlink "../bower_components", $public_html
+ end
+
+ def self.render
+  ## Initialize the site
+  Site.init_public_html
+
+  ## Load the cache
+  $cache = Cache.read $cache_file
+
+  ## Load the data for the pages
+  Page.read_all
+  
+  ## Generare each page
+  Page.render_all
+
+  ## Save the cache
+  Cache.write $cache_file, $cache
+ end
+end
+
+Site.render

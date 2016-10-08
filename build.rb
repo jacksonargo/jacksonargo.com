@@ -31,6 +31,7 @@ class Page
   @@instance_collector << self
  end
 
+ ## Convert the file name into the title
  def source2title(in_file)
   title = File.basename in_file
   title = title.sub /.md$/, '' # Remove the extension
@@ -38,6 +39,7 @@ class Page
   title.gsub /_/, ' '          # Convert underscore to spaces
  end
 
+ ## Convert the file name into tags
  def source2tags(in_file)
   tags = File.basename in_file
   tags = tags.sub /.md$/, '' # Remove the extension
@@ -45,6 +47,7 @@ class Page
   tags.drop 1                # Drop the title
  end
 
+ ## Determine the target path for the page
  def source2target(in_file, section)
   out_file = File.basename(in_file).sub /.md$/, ".html"
   if section != nil
@@ -54,21 +57,26 @@ class Page
   end
  end
 
+ ## Determine what section the page belongs to
  def source2section(in_file)
   section = File.dirname(in_file).sub /^#{$markdown_src}/, ''
   section.split('/')[1]
  end
 
+ ## Determine the publish date for the page
  def source2date(in_file, section)
+  ## The sub directories should indicate the date
   if section and File.dirname(in_file) != "#{$markdown_src}/#{section}"
    date = File.dirname(in_file).sub /^#{$markdown_src}\/#{section}\//, ''
    date = date.split('/')
    Time.new date[0], date[1], date[2]
+  ## Otherwise, just use the modification time
   else
    File.mtime in_file
   end
  end
 
+ ## Convert the file to markdown
  def md2html(in_file)
   ## Only regenerate if what is in cache doesn't match
   md5_in = Digest::MD5.hexdigest File.read(in_file)
@@ -93,6 +101,7 @@ class Page
   return content
  end
 
+ ## Reload the page's content
  def refresh_content
   @content = md2html @source
  end
@@ -111,6 +120,7 @@ class Page
   end
  end
 
+ ## String representation of the page
  def to_s
   @title
  end

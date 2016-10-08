@@ -7,7 +7,7 @@ require 'fileutils'
 require 'erb'
 
 $public_html = "public_html"
-$mardown_src = "src/markdown"
+$markdown_src = "src/markdown"
 $template_src = "src/templates"
 
 ## Page class stores data for each markdown file.
@@ -21,10 +21,10 @@ class Page
   @source = in_file
   @title = source2title in_file
   @tags = source2tags in_file
-  @target = source2target in_file
-  @content = md2html in_file
-  @date = File.mtime in_file
   @section = source2section in_file
+  @content = md2html in_file
+  @date = source2date in_file, @section
+  @target = source2target in_file, @section
   @@instance_collector << self
  end
 
@@ -42,14 +42,24 @@ class Page
   tags.drop 1                # Drop the title
  end
 
- def source2target(in_file)
-  out_file = in_file.sub /.md$/, ".html"
-  out_file.sub /^#{$mardown_src}/, $public_html
+ def source2target(in_file, section)
+  out_file = File.basename(in_file).sub /.md$/, ".html"
+  "#{$public_html}/#{section}/#{out_file}"
  end
 
  def source2section(in_file)
-  section = File.dirname(in_file).sub /^#{$mardown_src}/, ''
-  section.sub /^\//, ''
+  section = File.dirname(in_file).sub /^#{$markdown_src}/, ''
+  section.split('/')[1]
+ end
+
+ def source2date(in_file, section)
+  if section and File.dirname(in_file) != "#{$markdown_src}/#{section}"
+   date = File.dirname(in_file).sub /^#{$markdown_src}\/#{section}\//, ''
+   date = date.split('/')
+   Time.new date[0], date[1], date[2]
+  else
+   File.mtime in_file
+  end
  end
 
  def md2html(in_file)
@@ -111,7 +121,7 @@ class Page
    sections[page.section] = true
   end
   array = []
-  sections.each_key { |k| array << k if k != '' }
+  sections.each_key { |k| array << k if k }
   array
  end
 
@@ -153,11 +163,11 @@ def render_site
  end
  
  ## Make the sub directories
- Find.find($mardown_src) do |src_dir|
+ Find.find($markdown_src) do |src_dir|
   ## We only care about directories
   next unless File.directory? src_dir
   # Convert the path name
-  target_dir = src_dir.sub /^#{$mardown_src}/, $public_html
+  target_dir = src_dir.sub /^#{$markdown_src}/, $public_html
   # Create the directory
   FileUtils::mkdir_p target_dir
  end

@@ -1,6 +1,10 @@
 <div class="container">
 <% unless @title =~ /^(index|Resume)$/ %>
 <h1><%= @title %></h1>
+<% unless @section == nil %>
+<em>Published <%= @date.strftime "%b %d, %Y" %></em>
+<% end %>
+<p></p>
 <% end %>
 <%= @content %>
 </div>

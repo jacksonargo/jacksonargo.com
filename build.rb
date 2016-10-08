@@ -5,10 +5,13 @@ require 'json'
 require 'octokit'
 require 'fileutils'
 require 'erb'
+require 'yaml'
+require 'digest'
 
 $public_html = "public_html"
 $markdown_src = "src/markdown"
 $template_src = "src/templates"
+$cache_file = "cache/pages.yaml"
 
 ## Page class stores data for each markdown file.
 class Page
@@ -63,14 +66,27 @@ class Page
  end
 
  def md2html(in_file)
+  ## Only regenerate if what is in cache doesn't match
+  md5_in = Digest::MD5.hexdigest File.read(in_file)
+  if $cache[in_file] != nil
+   md5_cache = $cache[in_file]["md5sum"]
+   return $cache[in_file]["content"] if md5_in == md5_cache
+  end
+
   ## If there is an access token in the environment, we can use that to auth
   token = ENV['TOKEN']
   if token != nil
    client = Octokit::Client.new :access_token => token
-   client.markdown File.read(in_file), :mode => "gfm"
+   content = client.markdown File.read(in_file), :mode => "gfm"
   else
-   Octokit.markdown File.read(in_file), :mode => "gfm"
+   content = Octokit.markdown File.read(in_file), :mode => "gfm"
   end
+
+  ## Update the cache
+  $cache[in_file] = { "md5sum" => md5_in, "content" => content }
+
+  ## We are done
+  return content
  end
 
  def refresh_content
@@ -153,6 +169,14 @@ def render_site
  FileUtils::symlink "../assets", $public_html
  FileUtils::symlink "../bower_components", $public_html
  
+ ## Load/initialize the cache
+ if File.exists? $cache_file
+  $cache = YAML::load_file $cache_file
+ else
+  FileUtils::mkdir_p File.dirname($cache_file)
+  $cache = {}
+ end
+
  ## Load the data for the pages
  Find.find("src/markdown") do |in_file|
   ## Only operate on files
@@ -174,6 +198,9 @@ def render_site
  
  ## Generare each page
  Page.all_pages.each { |page| page.render }
+ 
+ ## Save the cache file
+ File.open($cache_file, "w") { |f| f.write YAML::dump($cache) }
 end
 
 render_site

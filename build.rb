@@ -59,10 +59,7 @@ class Page
  def md2html(in_file)
   ## Only regenerate if what is in cache doesn't match
   md5_in = Digest::MD5.hexdigest File.read(in_file)
-  if $cache[in_file] != nil
-   md5_cache = $cache[in_file]["md5sum"]
-   return $cache[in_file]["content"] if md5_in == md5_cache
-  end
+  return Cache.content(in_file) if md5_in == Cache.md5sum(in_file)
 
   ## If there is an access token in the environment, we can use that to auth
   token = ENV['TOKEN']
@@ -74,7 +71,8 @@ class Page
   end
 
   ## Update the cache
-  $cache[in_file] = { "md5sum" => md5_in, "content" => content }
+  Cache.md5sum in_file, md5_in
+  Cache.content in_file, content
 
   ## We are done
   return content
@@ -169,16 +167,36 @@ end
 
 ## Class to access the cache
 class Cache
+
+ @cache_file = "cache/cache.yaml"
+
+ ## Access md5sum
+ def self.md5sum(in_file, md5sum = nil)
+  cache = self.read
+  cache[in_file] ||= {}
+  return cache[in_file]["md5sum"] if md5sum == nil
+  cache[in_file]["md5sum"] = md5sum
+  self.write cache
+ end
+
+ ## Access content
+ def self.content(in_file, content = nil)
+  cache = self.read
+  return cache[in_file]["content"] if content == nil
+  cache[in_file]["content"] = content
+  self.write cache
+ end
+
  ## Read the cache file
- def self.read(cache_file)
-  return {} unless File.exists? cache_file
-  YAML::load_file cache_file
+ def self.read
+  return {} unless File.exists? @cache_file
+  YAML::load_file @cache_file
  end
 
  ## Save the cache file
- def self.write(cache_file, cache)
-  FileUtils::mkdir_p File.dirname(cache_file)
-  File.write cache_file, YAML::dump(cache)
+ def self.write(cache)
+  FileUtils::mkdir_p File.dirname(@cache_file)
+  File.write @cache_file, YAML::dump(cache)
  end
 end
 
@@ -197,9 +215,6 @@ class Site
   ## Initialize the site
   Site.init_public_html
 
-  ## Load the cache
-  $cache = Cache.read $cache_file
-
   ## Load the data for the pages
   Pages.each { |p| puts p }
   Articles.each { |p| puts p }
@@ -207,9 +222,6 @@ class Site
   ## Generare each page
   Pages.render
   Articles.render
-
-  ## Save the cache
-  Cache.write $cache_file, $cache
  end
 end
 

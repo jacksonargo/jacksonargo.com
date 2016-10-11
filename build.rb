@@ -71,8 +71,7 @@ class Page
   end
 
   ## Update the cache
-  Cache.md5sum in_file, md5_in
-  Cache.content in_file, content
+  Cache.update in_file, { "md5sum" => md5_in, "content" => content }
 
   ## We are done
   return content
@@ -170,21 +169,25 @@ class Cache
 
  @cache_file = "cache/cache.yaml"
 
- ## Access md5sum
- def self.md5sum(in_file, md5sum = nil)
+ ## Update the cache
+ def self.update(in_file, data = {})
   cache = self.read
-  cache[in_file] ||= {}
-  return cache[in_file]["md5sum"] if md5sum == nil
-  cache[in_file]["md5sum"] = md5sum
+  cache[in_file] = data
   self.write cache
  end
 
- ## Access content
- def self.content(in_file, content = nil)
+ ## Access md5sum
+ def self.md5sum(in_file)
   cache = self.read
-  return cache[in_file]["content"] if content == nil
-  cache[in_file]["content"] = content
-  self.write cache
+  cache[in_file] ||= {}
+  cache[in_file]["md5sum"]
+ end
+
+ ## Access content
+ def self.content(in_file)
+  cache = self.read
+  cache[in_file] ||= {}
+  cache[in_file]["content"]
  end
 
  ## Read the cache file

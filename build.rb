@@ -11,69 +11,48 @@ require 'digest'
 $public_html = "public_html"
 $markdown_src = "src/markdown"
 $template_src = "src/templates"
-$cache_file = "cache/pages.yaml"
+$cache_file = "cache/cache.yaml"
 
-## Page class stores data for each markdown file.
+## Page class stores data for pages.
 class Page
- attr_reader :title, :source, :target, :content, :date, :section
+ attr_reader :title, :source, :target, :content, :date, :tags
 
- @@instance_collector = []
+ ## Initialize a new page
+ def initialize(data = {})
+  @title  = data["title"]
+  @source = data["source"]
+  @date   = data["date"]
+  @target = data["target"]
+  @tags   = data["tags"]
+  @content = md2html data["source"]
 
- ## Initialize the class
- def initialize(in_file)
-  @source = in_file
-  @title = source2title in_file
-  @tags = source2tags in_file
-  @section = source2section in_file
-  @content = md2html in_file
-  @date = source2date in_file, @section
-  @target = source2target in_file, @section
-  @@instance_collector << self
+  @date ||= Time.now
+  @source ||= title2source @title
+  @target ||= source2target @source
+  @tags   ||= []
  end
 
- ## Convert the file name into the title
- def source2title(in_file)
-  title = File.basename in_file
-  title = title.sub /.md$/, '' # Remove the extension
-  title = title.sub /#.*/, ''  # Remove the tags
-  title.gsub /_/, ' '          # Convert underscore to spaces
+ ## Dump the page meta data as a hash
+ def dump
+  {
+    "source" => @source,
+    "title"  => @title,
+    "date"   => @date,
+    "target" => @target,
+    "tags"   => @tags
+  }
  end
 
- ## Convert the file name into tags
- def source2tags(in_file)
-  tags = File.basename in_file
-  tags = tags.sub /.md$/, '' # Remove the extension
-  tags = tags.split '#'      # Separate the tags
-  tags.drop 1                # Drop the title
+ ## Convert the title into the source name
+ def title2source(t)
+  s = t.gsub /\ /, '_'
+  "#{s}.md"
  end
 
  ## Determine the target path for the page
- def source2target(in_file, section)
-  out_file = File.basename(in_file).sub /.md$/, ".html"
-  if section != nil
-   "#{$public_html}/#{section}/#{out_file}"
-  else
-   "#{$public_html}/#{out_file}"
-  end
- end
-
- ## Determine what section the page belongs to
- def source2section(in_file)
-  section = File.dirname(in_file).sub /^#{$markdown_src}/, ''
-  section.split('/')[1]
- end
-
- ## Determine the publish date for the page
- def source2date(in_file, section)
-  ## The sub directories should indicate the date
-  if section and File.dirname(in_file) != "#{$markdown_src}/#{section}"
-   date = File.dirname(in_file).sub /^#{$markdown_src}\/#{section}\//, ''
-   date = date.split('/')
-   Time.new date[0], date[1], date[2]
-  ## Otherwise, just use the modification time
-  else
-   File.mtime in_file
-  end
+ def source2target(s)
+  out_file = File.basename(s).sub /\.md$/, ".html"
+  "#{$public_html}/#{out_file}"
  end
 
  ## Convert the file to markdown
@@ -139,59 +118,56 @@ class Page
   FileUtils::mkdir_p File.dirname @target
   File.open(@target, "w") { |f| f.write pre + main + post }
  end
+end
 
- ## Return array of each page
- def self.all_pages
-  @@instance_collector
+## Pages class lets you access all the pages.
+class Pages
+ include Enumerable
+ 
+ @meta_data_file = "data/pages.yaml"
+
+ def self.each(&block)
+  self.load.each(&block)
  end
 
- ## Return all sections as array
- def self.all_sections
-  sections = {}
-  @@instance_collector.each do |page|
-   sections[page.section] = true
+ def self.render
+  self.each { |p| p.render }
+ end
+
+ ## Load all the pages
+ def self.load
+  pages = []
+  data = YAML::load_file @meta_data_file
+  data.each { |page| pages << Page.new(page) } 
+  pages
+ end
+
+ ## Save all the pages
+ def self.add(new)
+  data = []
+  self.each do |page|
+   data << page.dump
   end
-  array = []
-  sections.each_key { |k| array << k if k }
-  array
- end
-
- ## Return all the pages that are part of a section
- def self.section(section)
-  p = []
-  @@instance_collector.each do |x|
-   next if x.is_index?
-   p << x if x.section == section
-  end
-  return p
- end
-
- ## Find the page with the matching title
- def self.with_title(title)
-  @@instance_collector.each do |x|
-   return x if x.title == title
-  end
-  return nil
- end
-
- ## Generate all pages
- def self.read_all
-  ## Load the data for the pages
-  Find.find($markdown_src) do |in_file|
-   ## Only operate on files
-   next unless File.file? in_file
-   ## Only operate on markdown
-   next unless in_file =~ /.md$/
-   Page.new in_file
-  end
- end
-
- ## Render all pages
- def self.render_all
-  @@instance_collector.each { |p| p.render }
+  data << new
+  File.write @meta_data_file, YAML::dump(data)
  end
 end
 
+## Article class stores data for the articles.
+class Article < Page
+ ## Determine the target path for the page
+ def source2target(in_file, section)
+  out_file = File.basename(in_file).sub /.md$/, ".html"
+  "#{$public_html}/Articles/#{out_file}"
+ end
+end
+
+## Articles class lets you access all the articles
+class Articles < Pages
+ @meta_data_file = "data/articles.yaml"
+end
+
+## Class to access the cache
 class Cache
  ## Read the cache file
  def self.read(cache_file)
@@ -225,14 +201,26 @@ class Site
   $cache = Cache.read $cache_file
 
   ## Load the data for the pages
-  Page.read_all
+  Pages.each { |p| puts p }
+  Articles.each { |p| puts p }
   
   ## Generare each page
-  Page.render_all
+  Pages.render
+  Articles.render
 
   ## Save the cache
   Cache.write $cache_file, $cache
  end
 end
 
-Site.render
+case ARGV[0]
+ when 'new'
+  case ARGV[1]
+   when 'article'
+    Article.new ARGV[2]
+   when 'page'
+    Page.new ARGV[2]
+  end
+ when 'render'
+  Site.render
+end

@@ -54,13 +54,13 @@
 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pages<span class="caret"></span></a>
 <ul class="dropdown-menu">
 
- <!--- Sections -->
- <%- Page.all_sections.each do |section| -%>
- <li roll="separator" class="navbar-text"><%= section %></li>
- <%- Page.section(section).sort{ |x,y| y.date <=> x.date }.each do |page| -%>
- <li><a href=<%= page.link %>><%= page.title %></a></li>
- <%- end -%>
- <%- end -%>
+<!--- Articles -->
+<li roll="separator" class="navbar-text">Articles</li>
+<%#<%- Articles.sort{ |x,y| y.date <=> x.date }.each do |page| -%>
+<%- Articles.each do |page| -%>
+<li><a href=<%= page.link %>><%= page.title %></a></li>
+<%- end -%>
+
 
  <!--Presentations -->
  <li roll="separator" class="navbar-text">Presentations</li>

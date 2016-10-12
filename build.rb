@@ -217,7 +217,6 @@ class Site
   
   ## Symlink the needful
   FileUtils::symlink "../assets", $public_html
-  FileUtils::symlink "../bower_components", $public_html
  end
 
  def self.render

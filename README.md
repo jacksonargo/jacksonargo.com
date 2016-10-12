@@ -10,6 +10,16 @@ My personal website written in markdown. I use a ruby script to convert the mark
  * assets - Symlinked inside public\_html
 
 ## To build the site:
-        $ bower install
         $ bundle install
-        $ ./build.rb 
+        $ ./manage.rb render
+
+## Usage:
+         ./manage.rb render
+         ./manage.rb new page|article TITLE [SOURCE]
+         ./manage.rb rm page|article TITLE [SOURCE]
+
+### To initialize metadata for a new article
+         ./manage.rb new article "My New Article"
+
+### To remove metadata for an article
+         ./manage.rb rm article "My New Article"

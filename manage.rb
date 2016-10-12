@@ -269,7 +269,7 @@ class Menu
  ## Print menu usage
  def self.usage
   puts "Usage:"
-  puts " #{$0} new|render"
+  puts " #{$0} render"
   puts " #{$0} new page|article TITLE [SOURCE]"
   puts " #{$0} rm page|article TITLE [SOURCE]"
  end

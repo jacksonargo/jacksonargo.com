@@ -149,11 +149,20 @@ class Pages
  end
 
  ## Add a new page
- def self.add(page)
+ def self.add(data)
   pages = self.load
-  pages << Page.new(page)
+  pages << Page.new(data)
   self.save pages
   pages.last
+ end
+
+ ## Delete pages
+ def self.delete(pattern)
+  rm_data = self.search(pattern).map(&:dump)
+  pages = []
+  self.each { |page| pages << page unless rm_data.include?(page.dump) }
+  self.save pages
+  rm_data.count
  end
 
  ## Sort pages
@@ -163,10 +172,9 @@ class Pages
 
  ## Search for a page
  def self.search(dict)
-  pages = self.load
   matches = []
-  pages.each { |page| matches << page if dict < page.dump }
-  pages
+  self.each { |page| matches << page if dict < page.dump }
+  matches
  end
 end
 
@@ -258,18 +266,27 @@ class Site
 end
 
 class Menu
+ ## Print menu usage
  def self.usage
- puts "Usage:"
- puts "  #{$0} new|render"
- puts "Usage: #{$0} new page|article TITLE [SOURCE]"
- puts "Usage: #{$0} rm page|article TITLE [SOURCE]"
+  puts "Usage:"
+  puts " #{$0} new|render"
+  puts " #{$0} new page|article TITLE [SOURCE]"
+  puts " #{$0} rm page|article TITLE [SOURCE]"
  end
- def self.new
+
+ ## Check args
+ def self.check_args
   unless ARGV[2]
-   puts "Usage: #{$0} new page|article TITLE [SOURCE]"
+   Menu.usage
    exit 1
   end
-  data = { "title" => ARGV[2], "source" => ARGV[3] }
+  return { "title" => ARGV[2], "source" => ARGV[3] } if ARGV[3]
+  { "title" => ARGV[2] }
+ end
+
+ ## Create something new
+ def self.new
+  data = self.check_args
   case ARGV[1]
    when 'article'
     page = Articles.add data
@@ -282,16 +299,27 @@ class Menu
   end
  end
 
+ ## Remove something
  def self.rm
+  data = self.check_args
+  case ARGV[1]
+   when 'article'
+    n = Articles.delete data
+    puts "#{n} article metadata deleted; sources untouched."
+   when 'page'
+    page = Pages.delete data
+    puts "#{n} page metadata deleted; sources untouched."
+  end
  end
 
+ ## Render the site
  def self.render
   Site.render
  end
 end
 
-if ARGV[0] =~ /new|render/
+if ARGV[0] =~ /new|rm|render/
  Menu.send(ARGV[0])
 else
- puts "Usage: #{$0} new|render"
+ Menu.usage
 end

@@ -24,12 +24,13 @@ class Page
   @date   = data["date"]
   @target = data["target"]
   @tags   = data["tags"]
-  @content = md2html data["source"]
 
   @date ||= Time.now
-  @source ||= title2source @title
-  @target ||= source2target @source
+  @source ||= title2source
+  @target ||= source2target
   @tags   ||= []
+
+  @content = md2html @source
  end
 
  ## Dump the page meta data as a hash
@@ -44,19 +45,20 @@ class Page
  end
 
  ## Convert the title into the source name
- def title2source(t)
-  s = t.gsub /\ /, '_'
-  "#{s}.md"
+ def title2source
+  source = @title.gsub /\ /, '_'
+  "#{$markdown_src}/#{source}.md"
  end
 
  ## Determine the target path for the page
- def source2target(s)
-  out_file = File.basename(s).sub /\.md$/, ".html"
+ def source2target
+  out_file = File.basename(@source).sub /\.md$/, ".html"
   "#{$public_html}/#{out_file}"
  end
 
  ## Convert the file to markdown
  def md2html(in_file)
+  return "" unless File.exists?(in_file)
   ## Only regenerate if what is in cache doesn't match
   md5_in = Digest::MD5.hexdigest File.read(in_file)
   return Cache.content(in_file) if md5_in == Cache.md5sum(in_file)
@@ -139,20 +141,42 @@ class Pages
   pages
  end
 
- ## Add a new page
- def self.add(new)
-  data = self.load
-  data << new
+ ## Save pages
+ def self.save(pages)
+  data = []
+  pages.each { |page| data << page.dump }
   File.write @meta_data_file, YAML::dump(data)
  end
 
+ ## Add a new page
+ def self.add(page)
+  pages = self.load
+  pages << Page.new(page)
+  self.save pages
+  pages.last
+ end
+
+ ## Sort pages
  def self.sort(&block)
   self.each.sort(&block)
+ end
+
+ ## Search for a page
+ def self.search(dict)
+  pages = self.load
+  matches = []
+  pages.each { |page| matches << page if dict < page.dump }
+  pages
  end
 end
 
 ## Article class stores data for the articles.
 class Article < Page
+ ## Convert the title into the source name
+ def title2source
+  source = @title.gsub /\ /, '_'
+  "#{$markdown_src}/Articles/#{source}.md"
+ end
  ## Determine the target path for the page
  def source2target(in_file, section)
   out_file = File.basename(in_file).sub /.md$/, ".html"
@@ -234,12 +258,18 @@ class Site
 end
 
 class Menu
+ def self.usage
+ puts "Usage:"
+ puts "  #{$0} new|render"
+ puts "Usage: #{$0} new page|article TITLE [SOURCE]"
+ puts "Usage: #{$0} rm page|article TITLE [SOURCE]"
+ end
  def self.new
   unless ARGV[2]
-   puts "Usage: #{$0} new page|article TITLE [SOURCE] [TARGET]"
+   puts "Usage: #{$0} new page|article TITLE [SOURCE]"
    exit 1
   end
-  data = { "title" => ARGV[2], "source" => ARGV[3], "target" => ARGV[4] }
+  data = { "title" => ARGV[2], "source" => ARGV[3] }
   case ARGV[1]
    when 'article'
     page = Articles.add data
@@ -250,6 +280,9 @@ class Menu
     puts "New page #{ARGV[2]} created."
     puts "Source: #{page.source}"
   end
+ end
+
+ def self.rm
  end
 
  def self.render

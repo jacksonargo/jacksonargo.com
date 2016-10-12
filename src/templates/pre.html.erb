@@ -4,17 +4,20 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>Jackon Argo</title>
-
-<!-- Latest compiled and minified CSS -->
+<%# 
+  Latest compiled and minified CSS
+-%>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-<!-- Optional theme -->
+<%#
+  Optional theme
+-%>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 </head>
-
 <body>
+<%#
+  Begin Navbar
+-%>
 <div class="container">
 <br/>
 <nav class="navbar navbar-inverse">
@@ -28,63 +31,70 @@
 </button>
 <a class="navbar-brand" href="/">Jackson Argo</a>
 </div>
+<%#
+  Navbar links
+-%>
 <div class="collapse navbar-collapse" id="navbar-collapse-1">
 <ul class="nav navbar-nav">
-
-<!-- Home -->
+<%#
+  Home
+-%>
 <%- if link == "/" -%>
 <li class="active"><a href="#">Home<span class="sr-only">(current)</span></a></li>
 <%- else -%>
 <li><a href="/">Home</a></li>
 <%- end -%>
-
-<!-- Resume -->
+<%#
+  Resume
+-%>
 <%- if link == "/Resume.html" -%>
 <li class="active"><a href="#">Resume<span class="sr-only">(current)</span></a></li>
 <%- else -%>
 <li><a href="/Resume.html">Resume</a></li>
 <%- end -%>
-
-<!--- Public Key -->
-<% if link == "/Public_Key.html" %>
+<%#
+  Public Key
+-%>
+<%- if link == "/Public_Key.html" -%>
 <li class="active"><a href="#">Public Key<span class="sr-only">(current)</span></a></li>
-<% else %>
+<%- else -%>
 <li><a href="/Public_Key.html">Public Key</a></li>
-<% end %>
-
-<!-- Navbar Dropdown -->
+<%- end -%>
+<%#
+  Navbar Dropdown
+-%>
 <li class="dropdown">
 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pages<span class="caret"></span></a>
 <ul class="dropdown-menu">
-
-<!--- Articles -->
+<%#
+   Articles
+-%>
 <li roll="separator" class="navbar-text">Articles</li>
 <%- Articles.sort{ |x,y| y.date <=> x.date }.each do |page| -%>
 <li><a href=<%= page.link %>><%= page.title %></a></li>
 <%- end -%>
-
-
-<!--Presentations -->
+<%#
+  Presentations
+-%>
 <li roll="separator" class="navbar-text">Presentations</li>
 <li><a href=/assets/slides/2016/04/28/Access_Control.pdf>Access Control</a></li>
 <li><a href=/assets/slides/2016/01/14/Abstracting_For_Automation.html>Abstracting for Automation</a></li>
 <li><a href=/assets/slides/2015/11/18/Introduction_To_The_Linux_Kernel.html>Introduction to the Linux Kernel</a></li>
-
 </ul>
 </li>
-<!--- End dropdown -->
-
+<%#
+ End dropdown
+-%>
 </ul>
-<!--- End left side of navbar -->
-
-<!--- Right side of navbar -->
-
+<%#
+  Right side of navbar
+-%>
 <ul class="nav navbar-nav navbar-right">
 <li><a href="https://github.com/jacksonargo">Github</a></li>
 <li><a href="https://github.com/jacksonargo/jacksonargo.com">Clone Me!</a></li>
 </li>
 </ul>
-</div><!-- /.navbar-collapse -->
-</div><!-- /.container-fluid -->
+</div>
+</div>
 </nav>
 </div>

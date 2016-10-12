@@ -139,12 +139,9 @@ class Pages
   pages
  end
 
- ## Save all the pages
+ ## Add a new page
  def self.add(new)
-  data = []
-  self.each do |page|
-   data << page.dump
-  end
+  data = self.load
   data << new
   File.write @meta_data_file, YAML::dump(data)
  end
@@ -221,26 +218,44 @@ class Site
 
  def self.render
   ## Initialize the site
-  Site.init_public_html
+  self.init_public_html
 
-  ## Load the data for the pages
+  ## Print each page that is loaded
   Pages.each { |p| puts p }
   Articles.each { |p| puts p }
   
-  ## Generare each page
+  ## Generate each page
   Pages.render
   Articles.render
  end
 end
 
-case ARGV[0]
- when 'new'
+class Menu
+ def self.new
+  unless ARGV[2]
+   puts "Usage: #{$0} new page|article TITLE [SOURCE] [TARGET]"
+   exit 1
+  end
+  data = { "title" => ARGV[2], "source" => ARGV[3], "target" => ARGV[4] }
   case ARGV[1]
    when 'article'
-    Article.new ARGV[2]
+    page = Articles.add data
+    puts "New article #{ARGV[2]} created."
+    puts "Source: #{page.source}"
    when 'page'
-    Page.new ARGV[2]
+    page = Pages.add data
+    puts "New page #{ARGV[2]} created."
+    puts "Source: #{page.source}"
   end
- when 'render'
+ end
+
+ def self.render
   Site.render
+ end
+end
+
+if ARGV[0] =~ /new|render/
+ Menu.send(ARGV[0])
+else
+ puts "Usage: #{$0} new|render"
 end

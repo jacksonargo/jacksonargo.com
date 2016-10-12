@@ -56,8 +56,7 @@
 
 <!--- Articles -->
 <li roll="separator" class="navbar-text">Articles</li>
-<%#<%- Articles.sort{ |x,y| y.date <=> x.date }.each do |page| -%>
-<%- Articles.each do |page| -%>
+<%- Articles.sort{ |x,y| y.date <=> x.date }.each do |page| -%>
 <li><a href=<%= page.link %>><%= page.title %></a></li>
 <%- end -%>
 

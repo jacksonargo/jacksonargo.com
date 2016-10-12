@@ -145,6 +145,10 @@ class Pages
   data << new
   File.write @meta_data_file, YAML::dump(data)
  end
+
+ def self.sort(&block)
+  self.each.sort(&block)
+ end
 end
 
 ## Article class stores data for the articles.
@@ -199,7 +203,7 @@ class Cache
  end
 
  ## Save the cache file
- def write(cache)
+ def self.write(cache)
   FileUtils::mkdir_p File.dirname(@cache_file)
   File.write @cache_file, YAML::dump(cache)
  end

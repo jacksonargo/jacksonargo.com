@@ -3,11 +3,14 @@
   title: Public Key
   date: 2016-10-07 07:30:18.041561874 -05:00
   target: public_html/Public_Key.html
+  tags: []
 - source: src/markdown/Resume.md
   title: Resume
   date: 2016-10-06 12:39:05.574408192 -05:00
   target: public_html/Resume.html
+  tags: []
 - source: src/markdown/index.md
   title: index
   date: 2016-10-06 01:47:38.126038539 -05:00
   target: public_html/index.html
+  tags: []

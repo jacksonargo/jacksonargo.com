@@ -8,17 +8,21 @@ require 'erb'
 require 'yaml'
 require 'digest'
 
-$public_html = "public_html"
-$markdown_src = "src/markdown"
-$template_src = "src/templates"
-$cache_file = "cache/cache.yaml"
-
-## Page class stores data for pages.
-class Page
+## Page module stores data for pages.
+module Page
  attr_reader :title, :source, :target, :content, :date, :tags
+ attr_reader :public_html, :markdown_src, :template_src
 
  ## Initialize a new page
  def initialize(data = {})
+
+  # Initialize the fs locations
+  @template_src = "src/templates"
+  @public_html = "public_html"
+  @markdown_src = "src/markdown/#{self.class}"
+  @markdown_src = "src/markdown" if self.class == RootPage
+
+  # Initialize the metadata
   @title  = data["title"]
   @source = data["source"]
   @date   = data["date"]
@@ -30,6 +34,7 @@ class Page
   @target ||= source2target
   @tags   ||= []
 
+  # Generate the content
   @content = md2html @source
  end
 
@@ -47,13 +52,14 @@ class Page
  ## Convert the title into the source name
  def title2source
   source = @title.gsub /\ /, '_'
-  "#{$markdown_src}/#{source}.md"
+  "#{@markdown_src}/#{source}.md"
  end
 
  ## Determine the target path for the page
  def source2target
   out_file = File.basename(@source).sub /\.md$/, ".html"
-  "#{$public_html}/#{out_file}"
+  "#{@public_html}/#{self.class}/#{out_file}"
+  "#{@public_html}/#{out_file}" if self.class == RootPage
  end
 
  ## Convert the file to markdown
@@ -92,9 +98,9 @@ class Page
  ## Return a link to the page.
  def link
   if @title == "index"
-   File.dirname(@target).sub(/^#{$public_html}/, '') + "/"
+   File.dirname(@target).sub(/^#{@public_html}/, '') + "/"
   else
-   @target.sub /^#{$public_html}/, ''
+   @target.sub /^#{@public_html}/, ''
   end
  end
 
@@ -107,9 +113,9 @@ class Page
  def render
   b = binding
   ## Load the templates
-  pre_template  = ERB.new(File.read("#{$template_src}/pre.html.erb"), 0, '-')
-  main_template = ERB.new(File.read("#{$template_src}/main.html.erb"), 0, '-')
-  post_template = ERB.new(File.read("#{$template_src}/post.html.erb"), 0, '-')
+  pre_template  = ERB.new(File.read("#{@template_src}/pre.html.erb"), 0, '-')
+  main_template = ERB.new(File.read("#{@template_src}/main.html.erb"), 0, '-')
+  post_template = ERB.new(File.read("#{@template_src}/post.html.erb"), 0, '-')
   ## Generate the html page
   pre = pre_template.result b
   post = post_template.result b
@@ -121,9 +127,12 @@ end
 
 ## Pages class lets you access all the pages.
 class Pages
+ include Page
  include Enumerable
  
- @meta_data_file = "data/pages.yaml"
+ def self.meta_data_file
+  "data/#{self}.yaml"
+ end
 
  def self.each(&block)
   self.load.each(&block)
@@ -136,8 +145,8 @@ class Pages
  ## Load all the pages
  def self.load
   pages = []
-  data = YAML::load_file @meta_data_file
-  data.each { |page| pages << Page.new(page) } 
+  data = YAML::load_file self.meta_data_file
+  data.each { |page| pages << new(page) } 
   pages
  end
 
@@ -145,13 +154,13 @@ class Pages
  def self.save(pages)
   data = []
   pages.each { |page| data << page.dump }
-  File.write @meta_data_file, YAML::dump(data)
+  File.write self.meta_data_file, YAML::dump(data)
  end
 
  ## Add a new page
  def self.add(data)
   pages = self.load
-  pages << Page.new(data)
+  pages << new(data)
   self.save pages
   pages.last
  end
@@ -178,23 +187,22 @@ class Pages
  end
 end
 
+## Root class stores data for the root pages.
+class RootPage
+ include Page
+end
+
 ## Article class stores data for the articles.
-class Article < Page
- ## Convert the title into the source name
- def title2source
-  source = @title.gsub /\ /, '_'
-  "#{$markdown_src}/Articles/#{source}.md"
- end
- ## Determine the target path for the page
- def source2target(in_file, section)
-  out_file = File.basename(in_file).sub /.md$/, ".html"
-  "#{$public_html}/Articles/#{out_file}"
- end
+class Article
+ include Page
+end
+
+## Roots class lets you access all the root pages
+class RootPages < Pages
 end
 
 ## Articles class lets you access all the articles
 class Articles < Pages
- @meta_data_file = "data/articles.yaml"
 end
 
 ## Class to access the cache
@@ -244,11 +252,11 @@ end
 class Site
  def self.init_public_html
   ## Clear the existing public_html directory
-  FileUtils::rm_rf $public_html
-  FileUtils::mkdir_p $public_html
+  FileUtils::rm_rf "public_html"
+  FileUtils::mkdir_p "public_html"
   
   ## Symlink the needful
-  FileUtils::symlink "../assets", $public_html
+  FileUtils::symlink "../assets", "public_html"
  end
 
  def self.render
@@ -256,11 +264,11 @@ class Site
   self.init_public_html
 
   ## Print each page that is loaded
-  Pages.each { |p| puts p }
+  RootPages.each { |p| puts p }
   Articles.each { |p| puts p }
   
   ## Generate each page
-  Pages.render
+  RootPages.render
   Articles.render
  end
 end
@@ -270,8 +278,8 @@ class Menu
  def self.usage
   puts "Usage:"
   puts " #{$0} render"
-  puts " #{$0} new page|article TITLE [SOURCE]"
-  puts " #{$0} rm page|article TITLE [SOURCE]"
+  puts " #{$0} new rootpage|article TITLE [SOURCE]"
+  puts " #{$0} rm rootpage|article TITLE [SOURCE]"
  end
 
  ## Check args
@@ -293,9 +301,12 @@ class Menu
     puts "New article #{ARGV[2]} created."
     puts "Source: #{page.source}"
    when 'page'
-    page = Pages.add data
+    page = RootPages.add data
     puts "New page #{ARGV[2]} created."
     puts "Source: #{page.source}"
+   else
+    Menu.usage
+    exit 1
   end
  end
 
@@ -306,8 +317,8 @@ class Menu
    when 'article'
     n = Articles.delete data
     puts "#{n} article metadata deleted; sources untouched."
-   when 'page'
-    page = Pages.delete data
+   when 'rootpage'
+    page = RootPages.delete data
     puts "#{n} page metadata deleted; sources untouched."
   end
  end

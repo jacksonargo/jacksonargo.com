@@ -176,6 +176,11 @@ class Cache
   self.write cache
  end
 
+ ## Purge the cache
+ def self.purge
+  self.write {}
+ end
+
  ## Access md5sum
  def self.md5sum(in_file)
   cache = self.read
@@ -197,7 +202,7 @@ class Cache
  end
 
  ## Save the cache file
- def self.write(cache)
+ def write(cache)
   FileUtils::mkdir_p File.dirname(@cache_file)
   File.write @cache_file, YAML::dump(cache)
  end

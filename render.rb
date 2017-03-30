@@ -197,12 +197,24 @@ class Cache
 end
 
 ## My resume is a special beast who's markdown is templated
+## I also have a latex version that has to be rendered
 class Resume
- def self.render
+ def self.render_md
   @resume = YAML::load_file "data/resume.yaml"
   template = ERB.new(File.read("src/templates/Resume.md.erb"), 0, '-')
   md = template.result binding
   File.write "src/markdown/Resume.md", md
+ end
+ def self.render_tex
+  @resume = YAML::load_file "data/resume.yaml"
+  template = ERB.new(File.read("src/templates/Resume.tex.erb"), 0, '-')
+  tex = template.result binding
+  File.write "src/latex/Resume.tex", tex
+  `pdflatex -output-directory assets/documents src/latex/Resume.tex`
+ end
+ def self.render
+  self.render_md
+  self.render_tex
  end
 end
 

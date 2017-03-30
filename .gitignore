@@ -6,3 +6,4 @@ cache
 *.swp
 *.bak
 src/markdown/Resume.md
+src/latex/Resume.tex

@@ -13,7 +13,7 @@ My personal website written in markdown. I use a ruby script to convert the mark
 ## Requirements:
 In order to build the site, you will need make, ruby, bundler, and texlive.
 
-        # yum install make ruby rubygem-bundler texlive -y
+        # yum install make ruby rubygem-bundler texlive texlive-{preprint,sectsty} -y
 
 ## To build the site:
 I've included a make file for easier build and clean, specifically when generating the pdfs.

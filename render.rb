@@ -209,6 +209,7 @@ class Resume
   @resume = YAML::load_file "data/resume.yaml"
   template = ERB.new(File.read("src/templates/Resume.tex.erb"), 0, '-')
   tex = template.result binding
+  FileUtils::mkdir_p "src/latex"
   File.write "src/latex/Resume.tex", tex
  end
  def self.render

@@ -5,7 +5,7 @@
 
 ---
 
-<%- @resume.select{|k| k["type"] == "education"}.each do |x| -%>
+<%- @resume.select{|k| k["type"] == "work"}.each do |x| -%>
 #### <%= x["title"]%>
 ##### <%= x["employer"] %>
 ##### <%= x["date"] %> | <%= x["location"] %>

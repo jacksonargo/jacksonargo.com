@@ -5,3 +5,4 @@ bower_components
 cache
 *.swp
 *.bak
+src/markdown/Resume.md

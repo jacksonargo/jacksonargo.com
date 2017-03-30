@@ -23,7 +23,7 @@ Email: *jackson@jacksonargo.com*
 
 <%- @resume.select{|k| k["type"] == "education"}.each do |x| -%>
 #### <%= x["school"] %>
-##### <%= x["degree"] %>
+##### <%= x["major"] %>
 ##### <%= x["date"] %> | <%= x["location"] %>
 
 <%= x["description"] %>

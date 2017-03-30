@@ -210,7 +210,6 @@ class Resume
   template = ERB.new(File.read("src/templates/Resume.tex.erb"), 0, '-')
   tex = template.result binding
   File.write "src/latex/Resume.tex", tex
-  `pdflatex -output-directory assets/documents src/latex/Resume.tex`
  end
  def self.render
   self.render_md
@@ -240,7 +239,10 @@ class Site
    $pages << Page.new(page) if page =~ /\.md$/
   end
   # Render each page
-  $pages.each{|p| p.render }
+  $pages.each do |p|
+   p.render
+   puts "Rendered #{p.title}"
+  end
  end
 end
 

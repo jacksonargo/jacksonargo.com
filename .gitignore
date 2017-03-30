@@ -7,3 +7,5 @@ cache
 *.bak
 src/markdown/Resume.md
 src/latex/Resume.tex
+assets/documents/Resume.pdf
+tmp

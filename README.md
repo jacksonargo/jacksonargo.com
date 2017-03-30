@@ -5,21 +5,17 @@ My personal website written in markdown. I use a ruby script to convert the mark
 
  * src - All the source files.
  * src/markdown - All markdown files in this directory are converted into html and copied to public\_html.
- * src/templates - Template files used when generating the html.
- * public\_html - The document root for the website. This directory is created by the build script.
- * assets - Symlinked inside public\_html
+ * src/latex - Latex source files that are converted into pdfs.
+ * src/templates - Template files used when generating html and latex.
+ * public\_html - The document root for the website. This directory is created by the ruby script and contains all the site html.
+ * assets - This directory is symlinked inside public\_html, and contains everything else the site needs.
+
+## Requirements:
+In order to build the site, you will need make, ruby, bundler, and texlive.
+
+        # yum install make ruby rubygem-bundler texlive -y
 
 ## To build the site:
-        $ bundle install
-        $ ./manage.rb render
+I've included a make file for easier build and clean, specifically when generating the pdfs.
 
-## Usage:
-         ./manage.rb render
-         ./manage.rb new page|article TITLE [SOURCE]
-         ./manage.rb rm page|article TITLE [SOURCE]
-
-### To initialize metadata for a new article
-         ./manage.rb new article "My New Article"
-
-### To remove metadata for an article
-         ./manage.rb rm article "My New Article"
+        $ make

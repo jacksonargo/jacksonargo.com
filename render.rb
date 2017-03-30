@@ -13,7 +13,7 @@ $markdown_src = "src/markdown"
 $metadata_src = "data/metadata.yaml"
 $public_html = "public_html"
 
-## Page module stores data for pages.
+## Class to render the individual pages
 class Page
  attr_reader :title, :source, :target, :content, :date, :tags
 
@@ -196,6 +196,17 @@ class Cache
  end
 end
 
+## My resume is a special beast who's markdown is templated
+class Resume
+ def self.render
+  @resume = YAML::load_file "data/resume.yaml"
+  template = ERB.new(File.read("src/templates/Resume.md.erb"), 0, '-')
+  md = template.result binding
+  File.write "src/markdown/Resume.md", md
+ end
+end
+
+## Class to render all the pages
 class Site
  def self.init
   ## Clear the existing public_html directory
@@ -207,14 +218,16 @@ class Site
  end
 
  def self.render
-  ## Initialize the site
+  # Initialize the site
   self.init
-  ## Load each page
+  # Prerender Resume
+  Resume.render
+  # Preload each page
   $pages = []
   Find.find("src/markdown").each do |page|
    $pages << Page.new(page) if page =~ /\.md$/
   end
-  ## Render each page
+  # Render each page
   $pages.each{|p| p.render }
  end
 end

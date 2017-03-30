@@ -8,20 +8,17 @@ require 'erb'
 require 'yaml'
 require 'digest'
 
-/*
- * Global vars
- */
+## Global vars
 
 $template_src = "src/templates"
 $markdown_src = "src/markdown"
 $metadata_src = "data/metadata.yaml"
 $public_html = "public_html"
 
-/*
- * Class to render the individual pages
- * The page title and url will be determined be the name of the source file
- * The date and tags will be deteremined by existing metadata
- */
+## Class to render the individual pages
+## The page title and url will be determined be the name of the source file
+## The date and tags will be deteremined by existing metadata
+
 class Page
  attr_reader :title, :source, :target, :content, :date, :tags
 
@@ -164,8 +161,8 @@ end
 
 ## Class to access the cache
 ## This keeps me from hitting my api limit while testing
-class Cache
 
+class Cache
  @cache_file = "cache/cache.yaml"
 
  ## Update the cache
@@ -207,10 +204,10 @@ class Cache
  end
 end
 
-/* My resume is a special beast who's markdown is templated.
- * I also have a latex version that has to be rendered.
- * The final pdf is rendered by the make file
- */
+## My resume is a special beast who's markdown is templated.
+## I also have a latex version that has to be rendered.
+## The final pdf is rendered by the make file
+
 class Resume
  def self.render_md
   @resume = YAML::load_file "data/resume.yaml"
@@ -231,7 +228,7 @@ class Resume
  end
 end
 
-/* Class to render all the pages */
+## Class to render all the pages
 class Site
  def self.init
   ## Clear the existing public_html directory

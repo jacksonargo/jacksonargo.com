@@ -8,12 +8,20 @@ require 'erb'
 require 'yaml'
 require 'digest'
 
+/*
+ * Global vars
+ */
+
 $template_src = "src/templates"
 $markdown_src = "src/markdown"
 $metadata_src = "data/metadata.yaml"
 $public_html = "public_html"
 
-## Class to render the individual pages
+/*
+ * Class to render the individual pages
+ * The page title and url will be determined be the name of the source file
+ * The date and tags will be deteremined by existing metadata
+ */
 class Page
  attr_reader :title, :source, :target, :content, :date, :tags
 
@@ -84,7 +92,7 @@ class Page
   File.write $metadata_src, YAML::dump(data)
  end
 
- ## Convert the file to markdown
+ ## Convert the file to markdown via Octokit
  def md2html(in_file)
   return "" unless File.exists?(in_file)
   ## Only regenerate if what is in cache doesn't match
@@ -95,6 +103,7 @@ class Page
   token = ENV['TOKEN']
   if token != nil
    client = Octokit::Client.new :access_token => token
+   # Use gfm mode to get extra github style formatting
    content = client.markdown File.read(in_file), :mode => "gfm"
   else
    content = Octokit.markdown File.read(in_file), :mode => "gfm"
@@ -118,6 +127,7 @@ class Page
  end
 
  ## Check if the page is an article
+ ## Used when generating the menu bar
  def is_article?
   @source =~ /^#{$markdown_src}\/Articles/
  end
@@ -153,6 +163,7 @@ class Page
 end
 
 ## Class to access the cache
+## This keeps me from hitting my api limit while testing
 class Cache
 
  @cache_file = "cache/cache.yaml"
@@ -196,8 +207,10 @@ class Cache
  end
 end
 
-## My resume is a special beast who's markdown is templated
-## I also have a latex version that has to be rendered
+/* My resume is a special beast who's markdown is templated.
+ * I also have a latex version that has to be rendered.
+ * The final pdf is rendered by the make file
+ */
 class Resume
  def self.render_md
   @resume = YAML::load_file "data/resume.yaml"
@@ -218,7 +231,7 @@ class Resume
  end
 end
 
-## Class to render all the pages
+/* Class to render all the pages */
 class Site
  def self.init
   ## Clear the existing public_html directory
@@ -234,7 +247,7 @@ class Site
   self.init
   # Prerender Resume
   Resume.render
-  # Preload each page
+  # Pages have to be preloaded in order for the menus to work correctly
   $pages = []
   Find.find("src/markdown").each do |page|
    $pages << Page.new(page) if page =~ /\.md$/

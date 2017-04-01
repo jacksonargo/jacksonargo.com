@@ -1,7 +1,7 @@
 <div class="container">
 <% unless @title =~ /^(index|Resume)$/ %>
 <h1><%= @title %></h1>
-<% unless @section == nil %>
+<% if @target =~ /Articles/ %>
 <em>Published <%= @date.strftime "%b %d, %Y" %></em>
 <% end %>
 <p></p>

@@ -12,7 +12,6 @@ require 'digest'
 
 $template_src = "src/templates"
 $markdown_src = "src/markdown"
-$metadata_src = "data/metadata.yaml"
 $public_html = "public_html"
 
 ## Class to render the individual pages
@@ -28,7 +27,7 @@ class Page
   @source = source
 
   # Initialize the metadata
-  data = source2meta
+  data = Metadata.for(@source)
   if data
     @title  = data["title"]
     @date   = data["date"]
@@ -41,7 +40,7 @@ class Page
   @target ||= source2target
   @tags   ||= []
 
-  savemeta
+  Metadata.update(@source, data)
 
   # Generate the content
   @content = md2html @source
@@ -58,13 +57,6 @@ class Page
   }
  end
 
- ## Returns metadata for file
- def source2meta
-  return nil unless File.exists? $metadata_src
-  data = YAML::load_file $metadata_src
-  data.select{ |k| k["source"] == @source }.first
- end
-
  ## Convert the source name into the title
  def source2title
   title = File.basename @source
@@ -76,17 +68,6 @@ class Page
  def source2target
   out_file = @source.sub /\.md$/, ".html"
   out_file.sub $markdown_src, $public_html
- end
-
- ## Save metadata
- def savemeta
-  if File.exists? $metadata_src
-   data = YAML::load_file $metadata_src
-   data.delete(source2meta)
-  end
-  data ||= []
-  data << dump
-  File.write $metadata_src, YAML::dump(data)
  end
 
  ## Convert the file to markdown via Octokit
@@ -201,6 +182,38 @@ class Cache
  def self.write(cache)
   FileUtils::mkdir_p File.dirname(@cache_file)
   File.write @cache_file, YAML::dump(cache)
+ end
+end
+
+## Class to access metadata
+
+class Metadata
+ @metadata_file = "data/metadata.yaml"
+
+ ## Returns metadata for a page
+ def self.for(fname)
+  data = self.read
+  data.select{ |k| k["source"] == fname }.first
+ end
+
+ ## Updates metadata for a page
+ def self.update(fname, page_dump={})
+  data = self.read
+  data.delete self.for(fname)
+  data << page_dump
+  self.write(data)
+ end
+
+ ## Read the metadata from file
+ def self.read
+  return [] unless File.exists? @metadata_file
+  YAML::load_file @metadata_file
+ end
+
+ ## Write the metadata to file
+ def self.write(metadata)
+  FileUtils::mkdir_p File.dirname(@metadata_file)
+  File.write @metadata_file, YAML::dump(metadata)
  end
 end
 

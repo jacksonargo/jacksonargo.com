@@ -12,6 +12,7 @@ require 'digest'
 
 $template_src = "src/templates"
 $markdown_src = "src/markdown"
+$html_src = "src/html"
 $public_html = "public_html"
 
 ## Class to render the individual pages
@@ -40,10 +41,10 @@ class Page
   @target ||= source2target
   @tags   ||= []
 
-  Metadata.update(@source, data)
+  Metadata.update(@source, dump)
 
   # Generate the content
-  @content = md2html @source
+  refresh_content
  end
 
  ## Dump the page meta data as a hash
@@ -60,18 +61,22 @@ class Page
  ## Convert the source name into the title
  def source2title
   title = File.basename @source
-  title = title.sub /\.md$/, ''
+  title = title.sub /\.md$/, '' if is_md?
+  title = title.sub /\.html$/, '' if is_html?
   title.gsub /_/, ' '
  end
 
  ## Determine the target path for the page
  def source2target
-  out_file = @source.sub /\.md$/, ".html"
-  out_file.sub $markdown_src, $public_html
+  out_file = @source.sub /\.md$/, ".html" if is_md?
+  out_file = @source if is_html?
+  out_file.sub $markdown_src, $public_html if is_md?
+  out_file.sub $html_src, $public_html if is_html?
  end
 
  ## Convert the file to markdown via Octokit
- def md2html(in_file)
+ def md2html
+  in_file = @source
   return "" unless File.exists?(in_file)
   ## Only regenerate if what is in cache doesn't match
   md5_in = Digest::MD5.hexdigest File.read(in_file)
@@ -94,20 +99,36 @@ class Page
   return content
  end
 
+ ## Reads in html and returns it as string
+ def html2html
+  File.read @source
+ end
+
  ## Reload the page's content
  def refresh_content
-  @content = md2html @source
+  @content = md2html if is_md?
+  @content = html2html if is_html?
  end
 
  ## Check if this page is an index
  def is_index?
-  @source =~ /\/index.md$/
+  @target =~ /\/index.html$/
  end
 
  ## Check if the page is an article
  ## Used when generating the menu bar
  def is_article?
-  @source =~ /^#{$markdown_src}\/Articles/
+  @target =~ /^#{$public_html}\/Articles/
+ end
+
+ ## Check if a page source is markdown
+ def is_md?
+  @source =~ /\.md$/
+ end
+
+ ## Check if a page source is html
+ def is_html?
+  @source =~ /\.html$/
  end
 
  ## Return a link to the page.
@@ -193,7 +214,7 @@ class Metadata
  ## Returns metadata for a page
  def self.for(fname)
   data = self.read
-  data.select{ |k| k["source"] == fname }.first
+  data.select{ |k| k["source"] == fname if k }.first
  end
 
  ## Updates metadata for a page
@@ -259,6 +280,11 @@ class Site
   Resume.render
   # Pages have to be preloaded in order for the menus to work correctly
   $pages = []
+  # Get the html pages
+  Find.find("src/html").each do |page|
+   $pages << Page.new(page) if page =~ /\.html$/
+  end
+  # Get the markdown pages
   Find.find("src/markdown").each do |page|
    $pages << Page.new(page) if page =~ /\.md$/
   end
@@ -266,6 +292,7 @@ class Site
   $pages.each do |p|
    p.render
    puts "Rendered #{p.title}"
+   puts p.dump if p.title =~ /index/
   end
  end
 end

@@ -5,7 +5,6 @@ html:
 resume:
 	mkdir -p tmp
 	mkdir -p assets/documents
-	pdflatex --draft-mode -output-directory tmp src/latex/Resume.tex
 	pdflatex -output-directory tmp src/latex/Resume.tex
 	cp tmp/Resume.pdf assets/documents
 clean: clean_html clean_resume

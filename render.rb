@@ -12,8 +12,9 @@ require 'digest'
 
 $template_src = "src/templates"
 $markdown_src = "src/markdown"
-$html_src = "src/html"
-$public_html = "public_html"
+$html_src     = "src/html"
+$tex_src      = "src/latex"
+$public_html  = "public_html"
 
 ## Class to render the individual pages
 ## The page title and url will be determined be the name of the source file
@@ -74,6 +75,17 @@ class Page
   out_file.sub $html_src, $public_html if is_html?
  end
 
+ ## Reload the page's content
+ def refresh_content
+  @content = md2html if is_md?
+  @content = html2html if is_html?
+ end
+
+ ## Reads in html and returns it as string
+ def html2html
+  File.read @source
+ end
+
  ## Convert the file to markdown via Octokit
  def md2html
   in_file = @source
@@ -97,17 +109,6 @@ class Page
 
   ## We are done
   return content
- end
-
- ## Reads in html and returns it as string
- def html2html
-  File.read @source
- end
-
- ## Reload the page's content
- def refresh_content
-  @content = md2html if is_md?
-  @content = html2html if is_html?
  end
 
  ## Check if this page is an index
@@ -245,16 +246,16 @@ end
 class Resume
  def self.render_md
   @resume = YAML::load_file "data/resume.yaml"
-  template = ERB.new(File.read("src/templates/Resume.md.erb"), 0, '-')
+  template = ERB.new(File.read($template_src+"/Resume.md.erb"), 0, '-')
   md = template.result binding
-  File.write "src/markdown/Resume.md", md
+  File.write $markdown_src+"/Resume.md", md
  end
  def self.render_tex
   @resume = YAML::load_file "data/resume.yaml"
-  template = ERB.new(File.read("src/templates/Resume.tex.erb"), 0, '-')
+  template = ERB.new(File.read($template_src+"/Resume.tex.erb"), 0, '-')
   tex = template.result binding
-  FileUtils::mkdir_p "src/latex"
-  File.write "src/latex/Resume.tex", tex
+  FileUtils::mkdir_p $tex_src
+  File.write $tex_src+"/Resume.tex", tex
  end
  def self.render
   self.render_md
@@ -281,18 +282,17 @@ class Site
   # Pages have to be preloaded in order for the menus to work correctly
   $pages = []
   # Get the html pages
-  Find.find("src/html").each do |page|
+  Find.find($html_src).each do |page|
    $pages << Page.new(page) if page =~ /\.html$/
   end
   # Get the markdown pages
-  Find.find("src/markdown").each do |page|
+  Find.find($markdown_src).each do |page|
    $pages << Page.new(page) if page =~ /\.md$/
   end
   # Render each page
   $pages.each do |p|
    p.render
    puts "Rendered #{p.title}"
-   puts p.dump if p.title =~ /index/
   end
  end
 end

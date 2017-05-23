@@ -298,4 +298,8 @@ class Site
   end
 end
 
-Site.render
+if ARGV[0] == 'resume'
+  Resume.render
+else
+  Site.render
+end

@@ -77,16 +77,31 @@
 \MyName{Alexander Jackson Argo}
 \MySlogan{jackson@jacksonargo.com}
 
+\NewPart{Work experience}{}
+
+<%- @resume.select{|k| k["type"] == "rackspace"}.each do |x| -%>
+\EducationEntry{<%= x["title"] %>}{<%= x["date"] %>}{<%= x["employer"] %>}{
+<%- unless x["description"].nil? -%> <%= x["description"] %> <%- end -%>
+<%- unless x["items"].nil? -%>
+\begin{itemize}
+ <%- x["items"].each do |i| -%>
+ \item <%= i %>
+ <%- end -%>
+\end{itemize}
+<%- end -%>
+}
+<%- end -%>
+
+\clearpage
+
+<%- @resume.select{|k| k["type"] == "work"}.each do |x| -%>
+\EducationEntry{<%= x["title"] %>}{<%= x["date"] %>}{<%= x["employer"] %>}{<%= x["description"] %>}
+<%- end -%>
+
 \NewPart{Education}{}
 
 <%- @resume.select{|k| k["type"] == "education"}.each do |x| -%>
 \EducationEntry{<%= x["school"] %>}{<%= x["date"] %>}{<%= x["major"] %>}{<%= x["description"] %>}
-<%- end -%>
-
-\NewPart{Work experience}{}
-
-<%- @resume.select{|k| k["type"] == "work"}.each do |x| -%>
-\EducationEntry{<%= x["title"] %>}{<%= x["date"] %>}{<%= x["employer"] %>}{<%= x["description"] %>}
 <%- end -%>
 
 \NewPart{Projects}{}
@@ -95,13 +110,13 @@
 \ShortEntry{<%= x["title"] %>}{<%= x["date"] %>}{<%= x["description"] %>}
 <%- end -%>
 
-\clearpage
-
 \NewPart{Awards and Honors}{}
 
 <%- @resume.select{|k| k["type"] == "awards"}.each do |x| -%>
 \EducationEntry{<%= x["title"] %>}{<%= x["date"] %>}{<%= x["employer"] %>}{<%= x["description"] %>}
 <%- end -%>
+
+\clearpage
 
 \NewPart{Skills}{}
 

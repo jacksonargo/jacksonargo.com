@@ -7,16 +7,55 @@
   major: "B.S. in Mathematics \\\\ Cumulative GPA 3.5"
   description: "Graduated with Honors with a B. S. in Mathematics and minors in Physics and Philosophy. Worked part-time as a Linux systems administrator for the Dr. Rob Wood's Research Group for 3 years. Received Student Employee of the Year award in 2014. Played rugby for the UGARFC for 2 seasons. Served as UGAnime Technology officer for 1 year."
 
-- type: work
-  employer: Rackspace
-  title: Linux Systems Administrator
-  date: Apr 2015 - Present
+- type: rackspace
+  employer: Rackspace STRAT Linux
+  title: Linux Administrator
+  date: Oct 2016 - Present
   location: San Antonio, TX
-  description: "I work with multiple teams to provide Linux support and uptime for a wide variety of environments. My roles include responding to alerts, ensuring high availability and acceptable levels of performance and security, monitoring system performance and utilization, tracking vulnerabilities and appling appropriate patches and upgrades, and automating in troubleshooting and administration tasks."
+  items:
+   -  Provided Linux OS support for Rackspace strategic customers.
+   -  Promptly responded to alerts and organized communication between account team and customer escalations.
+   -  Coordinated with multiple teams and customer escalations to solve customer outages.
+   -  Provided reliable solutions in large-scale, highly available environments.
+   -  Prepared and QC-ed maintenances for strategic customers.
+
+- type: rackspace
+  employer: Rackspace ENT Linux
+  title: Linux Administrator
+  date: Aug 2016 - Oct 2016
+  location: San Antonio, TX
+  items:
+   -  Provided Linux OS support for Rackspace enterprise customers.
+   -  Promptly responded to alerts and coordinated with multiple teams to solve customer outages.
+
+- type: rackspace
+  employer: Rackspace SMB Linux
+  title: Linux Administrator
+  date: June 2016 - Aug 2016
+  location: San Antonio, TX
+  items:
+   -  Provided Linux OS support for Rackspace SMB customers.
+   -  Worked closely with DCOPS and NETSEC teams to solve customer outages due to infrastructure.
+   -  Organized communication between SMB and ENT teams to facilitate SMB onboarding for former Cloud Ops rackers.
+   -  Responded to alerts and performed OS maintenances.
+
+- type: rackspace
+  employer: Rackspace Cloud Operations
+  title: Linux Administrator
+  date: Apr 2015 - June 2016
+  location: San Antonio, TX
+  items:
+   -  Provided Linux OS support for Rackspace Cloud customers.
+   -  Created scalable LAMP and LNMP stacks leveraging Rackspace Cloud products.
+   -  Provided creative, reliable solutions in environments without redunancy or backups.
+   -  Worked closely with the Cloud Escalations team to identify and solve customer outages due to infrastructure.
+   -  Contributed to Servermill automation and cloud support tools.
+   -  Provided training and mentorship to new rackers.
+   -  Responded to alerts and performed OS maintenances.
 
 - type: work
   employer: "Dr. Rob Woods Research Group (University of Georgia)"
-  title: Systems Administrator
+  title: Linux Administrator
   date: Jan 2012 - Apr 2015
   location: Athens, GA
   description: "System administrator of a network of Linux computers for computational research. Configured and maintained a centralized Bacula backup server, a bind DNS server, and multiple NFS servers. Installed and maintained a Puppet configuration management server and Puppet module development and production environments. Installed and configured Zabbix for system monitoring, and Wordpress for site-wide documentation and electronic notebooks."
@@ -27,6 +66,12 @@
   date: Jan 2008 - July 2011
   location: Douglasville, GA
   description: "Supervise and instruct seasonal employees. Test cultivation and harvesting methods. Provide upkeep of plants and farm equipment."
+
+- type: projects
+  title: Cloud Burrito
+  date: March 2017 - Present
+  employer: Rackspace
+  description: Design and implement an application leveraging the Slack API that allows rackers to requests burritos which are then delivered by other rackers.
 
 - type: projects
   title: "Improve Clustering Methods"

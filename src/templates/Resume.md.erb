@@ -7,6 +7,18 @@ Email: *jackson@jacksonargo.com*
 
 ---
 
+<%- @resume.select{|k| k["type"] == "rackspace"}.each do |x| -%>
+#### <%= x["title"]%>
+##### <%= x["employer"] %>
+##### <%= x["date"] %> | <%= x["location"] %>
+
+<%- x["items"].each do |item| -%>
+* <%= item %>
+<%- end -%>
+
+---
+
+<%- end -%>
 <%- @resume.select{|k| k["type"] == "work"}.each do |x| -%>
 #### <%= x["title"]%>
 ##### <%= x["employer"] %>

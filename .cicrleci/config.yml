@@ -1,0 +1,5 @@
+deployment:
+  production:
+    branch: live
+    commands:
+      - "rsync -au public api.jacksonargo.com:/var/www/html/www.jacksonargo.com"

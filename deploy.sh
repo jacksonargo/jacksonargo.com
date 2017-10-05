@@ -1,1 +1,1 @@
-rsync -au public_html api.jacksonargo.com:/var/www/html/www.jacksonargo.com
+rsync -au public_html deploy@api.jacksonargo.com:/var/www/html/www.jacksonargo.com

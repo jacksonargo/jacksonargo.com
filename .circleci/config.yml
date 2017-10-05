@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    working_directory: /tmp/my-project
+    steps:
+      - deploy:
+          name: Maybe Deploy
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "live" ]; then
+              bash deploy.sh
+            fi

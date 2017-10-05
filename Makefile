@@ -1,7 +1,7 @@
 main: html resume
 html:
 	bundle install
-	ruby ./render.rb
+	bundle exec ruby ./render.rb
 resume:
 	mkdir -p tmp
 	mkdir -p assets/documents

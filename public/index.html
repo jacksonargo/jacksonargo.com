@@ -5,19 +5,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Jackon Argo</title>
-<%# 
-  Latest compiled and minified CSS
--%>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<%#
-  Optional theme
--%>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 </head>
 <body>
-<%#
-  Begin Navbar
--%>
 <div class="container">
 <br/>
 <nav class="navbar navbar-inverse">
@@ -31,64 +22,29 @@
 </button>
 <a class="navbar-brand" href="/">Jackson Argo</a>
 </div>
-<%#
-  Navbar links
--%>
 <div class="collapse navbar-collapse" id="navbar-collapse-1">
 <ul class="nav navbar-nav">
-<%#
-  Home
--%>
-<%- if link == "/" -%>
 <li class="active"><a href="#">Home<span class="sr-only">(current)</span></a></li>
-<%- else -%>
-<li><a href="/">Home</a></li>
-<%- end -%>
-<%#
-  Resume
--%>
-<%- if link == "/Resume.html" -%>
-<li class="active"><a href="#">Resume<span class="sr-only">(current)</span></a></li>
-<%- else -%>
 <li><a href="/Resume.html">Resume</a></li>
-<%- end -%>
-<%#
-  Public Key
--%>
-<%- if link == "/Public_Key.html" -%>
-<li class="active"><a href="#">Public Key<span class="sr-only">(current)</span></a></li>
-<%- else -%>
 <li><a href="/Public_Key.html">Public Key</a></li>
-<%- end -%>
-<%#
-  Navbar Dropdown
--%>
 <li class="dropdown">
 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pages<span class="caret"></span></a>
 <ul class="dropdown-menu">
-<%#
-   Articles
--%>
 <li roll="separator" class="navbar-text">Articles</li>
-<%- $pages.select{|k| k.is_article?}.sort{ |x,y| y.date <=> x.date }.each do |page| -%>
-<li><a href=<%= page.link %>><%= page.title %></a></li>
-<%- end -%>
-<%#
-  Presentations
--%>
+<li><a href=/Articles/LVM_Flowchart.html>LVM Flowchart</a></li>
+<li><a href=/Articles/Optimizing_Space_For_Disk_Based_Backups.html>Optimizing Space For Disk Based Backups</a></li>
+<li><a href=/Articles/Bacula_File_Pools.html>Bacula File Pools</a></li>
+<li><a href=/Articles/Build_A_Quick_Arch_Linux_VM.html>Build A Quick Arch Linux VM</a></li>
+<li><a href=/Articles/Bridging_a_VPN_into_a_LAN.html>Bridging a VPN into a LAN</a></li>
+<li><a href=/Articles/Browser_Addons_For_Internet_Security.html>Browser Addons For Internet Security</a></li>
+<li><a href=/Articles/Encrypt_Your_Thumbdrive.html>Encrypt Your Thumbdrive</a></li>
 <li roll="separator" class="navbar-text">Presentations</li>
 <li><a href=/assets/slides/2016/04/28/Access_Control.pdf>Access Control</a></li>
 <li><a href=/assets/slides/2016/01/14/Abstracting_For_Automation.html>Abstracting for Automation</a></li>
 <li><a href=/assets/slides/2015/11/18/Introduction_To_The_Linux_Kernel.html>Introduction to the Linux Kernel</a></li>
 </ul>
 </li>
-<%#
- End dropdown
--%>
 </ul>
-<%#
-  Right side of navbar
--%>
 <ul class="nav navbar-nav navbar-right">
 <li><a href="https://github.com/jacksonargo">Github</a></li>
 <li><a href="https://github.com/jacksonargo/jacksonargo.com">Clone Me!</a></li>
@@ -98,3 +54,26 @@
 </div>
 </nav>
 </div>
+<div class="container">
+
+<h1>Jackson Argo</h1>
+<h2>Linux Administrator and Nerd</h2>
+
+<div class="row">
+<div class="col-md-8">
+<p><img src="assets/images/me.png" alt="alt text" style="max-width:100%;"></p>
+<h3>Bio</h3>
+<p>I write dumb static websites in mark down that abuse the github api. You're welcome for my existence.</p>
+</div>
+<!--
+<div class="col-md-3">
+<a class="twitter-timeline" href="https://twitter.com/JacksonArgo">Tweets by JacksonArgo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+--!>
+</div>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+</html>

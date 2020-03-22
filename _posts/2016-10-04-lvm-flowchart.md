@@ -3,6 +3,7 @@ layout: post
 title: LVM Flowchart
 categories: []
 tags: [filesystems, lvm]
+author: Jackson Argo
 ---
 
 A flow chart for changing disk space via lvm.

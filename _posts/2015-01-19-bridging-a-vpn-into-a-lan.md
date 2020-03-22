@@ -1,3 +1,10 @@
+---
+layout: post
+categories: []
+tags: [vpn, openvpn]
+author: Jackson Argo
+---
+
 The sample configuration scripts that come packaged with OpenVPN tell you to assign the IP 0.0.0.0 to the network interfaces that you want to bridge, assign an IP to the bridge, and then set them to promiscuous mode, but there is no explanation as to why. This has caused me and many others a great amount of confusion and frustration when it came to creating custom scripts for vpn bridging. For this post, I analyze why this certain configuration makes sense.
 
 **Why assign an IP to the bridge and then change eth0 and tap0 to 0.0.0.0?**

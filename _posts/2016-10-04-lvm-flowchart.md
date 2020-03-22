@@ -1,3 +1,10 @@
+---
+layout: post
+title: LVM Flowchart
+categories: []
+tags: [filesystems, lvm]
+---
+
 A flow chart for changing disk space via lvm.
 
 ## Adding space to a filesystem

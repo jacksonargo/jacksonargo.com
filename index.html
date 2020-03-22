@@ -4,6 +4,10 @@ title: Jackson Argo
 ---
 
 <div>
-  <h1>Jackson Argo</h1>
-  Software Engineer, Linux Enthusiast, Weeb
+  <h1>Old blogs from college years</h1>
+  <ul class="posts">
+    {% for post in site.posts %}
+      <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
+  </ul>
 </div>

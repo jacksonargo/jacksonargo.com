@@ -2,3 +2,9 @@ theme: jekyll-theme-minimal
 title: Jackson Argo
 description: Software Developer, Linux Enthusiast, Musician, Weeb
 logo: logo.jpg
+defaults:
+  - scope:
+      path: "2016-04-28-access-control.pdf"
+    values:
+      date: 2016-04-28
+      title: Access Control

@@ -1,3 +1,10 @@
+---
+layout: post
+categories: []
+tags: [filesystems, bacula, backups]
+author: Jackson Argo
+---
+
 For this article, I want to show you how to optimize your ext4 partition for backups with Bacula. I suggest you also read my article on configuring file pools with Bacula here.
 
 In my previous post, I mentioned that you practically have an unlimited amount files you can create. This is usually true because when you create an ext4 filesystem, the inode table is created with one inode per 16384 bytes by default. Each inode is 256 bytes, and for a large filesystem, the inode table can take up sizeable amount of space. For instance, if you have a 24TB filesystem, the inode table will take up ~375 GB by default. If know you only need a couple hundred inodes, then be a little generous and make 32,768 (2^15) inodes that take up a grand total of 8MB. Use the -N option to specify the number of inodes when you make the filesystem. Keep in mind that ext4 will use ~10 inodes for it’s own information and at least 1 for the journal, and **YOU CANNOT CHANGE THE NUMBER OF INODES ONCE THE FILESYSTEM IS CREATED**, so it is absolutely critical that you choose the right number.

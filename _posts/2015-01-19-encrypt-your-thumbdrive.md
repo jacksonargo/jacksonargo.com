@@ -1,3 +1,10 @@
+---
+layout: post
+categories: []
+tags: [filesystems, luks, encryption]
+author: Jackson Argo
+---
+
 Thumb drives are handy devices for many occasions, but it is easy to fill them up with sensitive information without realizing it. This isn't a problem so long as we keep up with our little device. But if we accidentally misplace it or drop it, that sensative information is available to whoever happens to walk by and pick it up. The solution: an encrypted thumb drive!
 
 We will use cryptsetup, which was likely installed with your system, to create a LUKS, or Linux Unified Key Setup, device. Unlike the name suggests, this is actually pretty portable. The encryption happens at the read-write level; data is encrypted as it is written and decrypted as it is read. Assuming your device is /dev/sdX, have a password in mind and format the device. This process WILL IRREVOCABLY ERASE ALL DATA ON THE DRIVE YOU ENCRYPT so be sure to make backups and type carefully.

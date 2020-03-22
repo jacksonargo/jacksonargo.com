@@ -1,3 +1,10 @@
+---
+layout: post
+categories: []
+tags: [backups, bacula]
+author: Jackson Argo
+---
+
 [Bacula](http://blog.bacula.org/) is powerful and scalable open source backup software. Bacula has excellent integration with tape backups, and combined with its scalability, Bacula makes an great choice for enterprise backups. Since hard disks and NAS machines are now very cheap and reliable, backing up you data to hard disks has become a viable alternative to tapes. Bacula also supports backups to disks, but configuring this can seem a little weird since the Bacula software and documentation is written from the perspective of tape backups. For this tutorial, I will show you how to manage your backups to disk using file pools with Bacula.
 
 ### Creating the File Pools

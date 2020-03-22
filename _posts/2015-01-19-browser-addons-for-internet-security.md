@@ -1,3 +1,10 @@
+---
+layout: post
+categories: []
+tags: []
+author: Jackson Argo
+---
+
 
 Typical web browsing exposes our sensitive information and makes us a target for all kinds of malware. There isn’t a cure-all way to protect ourselves from this; if we are going to go out in public, we are putting ourselves at risk. Nonetheless, there are many effective methods to keep our information from just being easy takings for any neighborhood hacker. For this tutorial I will focus on beefing up our most important interface to the web, our web browser.
 

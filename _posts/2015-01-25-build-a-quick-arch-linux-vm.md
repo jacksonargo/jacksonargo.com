@@ -1,3 +1,10 @@
+---
+layout: post
+categories: []
+tags: [arch linux]
+author: Jackson Argo
+---
+
 
 Arch Linux is a great OS for bleeding-edge development since it uses a rolling release model, always has the latest packages available, and is extremely light-weight. Arch Linux also provides very intuitive software to automate building packages from source code, and most packages that aren’t in the official repositories can be found in the Arch User Repository (AUR). For this tutorial, I’ll show you how make a quick Arch Linux virtual machine using Virtual Box. For an added level of portability, we’ll avoid using a text editor through the entire installation and confiuration process.
 

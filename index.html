@@ -6,7 +6,7 @@ title: Jackson Argo
 <div>
   <h1>Presentations</h1>
   <ul class="posts">
-    {% for page in site.pages | where_exp:"page.collection", "slides" %}
+    {% for page in site.pages | where_exp:"page", "page.collection == slides" %}
       <li><span>{{ page.date | date_to_string }}</span> &raquo; <a href="{{ page.url }}">{{ page.title }}</a></li>
     {% endfor %}
   </ul>

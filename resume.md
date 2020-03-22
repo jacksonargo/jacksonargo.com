@@ -1,3 +1,7 @@
+---
+title: Resume
+---
+
 # Alexander Jackson Argo
 Email: *jackson@jacksonargo.com*
 
@@ -7,9 +11,15 @@ Email: *jackson@jacksonargo.com*
 
 ---
 
+#### Software Developer
+##### Slack
+##### Sept 2017 - Present | San Francisco, CA
+
+---
+
 #### Linux Systems Administrator
 ##### Rackspace
-##### Apr 2015 - Present | San Antonio, TX
+##### Apr 2015 - Aug 2017 | San Antonio, TX
 
 I work with multiple teams to provide Linux support and uptime for a wide variety of environments. My roles include responding to alerts, ensuring high availability and acceptable levels of performance and security, monitoring system performance and utilization, tracking vulnerabilities and appling appropriate patches and upgrades, and automating in troubleshooting and administration tasks.
 

@@ -4,7 +4,12 @@ title: Jackson Argo
 ---
 
 <div>
-  <h1>Old blogs from college years</h1>
+  <h1>Presentations</h1>
+  <ul class="posts">
+      <li><span>18 Nov 2015</span> &raquo; <a href="jacksonargo.com/slides/2015-11-18-introduction-to-the-linux-kernel/">Introduction To The Linux Kernel</a></li>
+  </ul>
+  
+  <h1>Tech Blogs</h1>
   <ul class="posts">
     {% for post in site.posts %}
       <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>

@@ -6,8 +6,8 @@ title: Jackson Argo
 <div>
   <h1>Presentations</h1>
   <ul class="posts">
-     {% for page in site.pages | where_exp:"page.collection", "slides" %}
-      <li><span>18 Nov 2015</span> &raquo; <a href="jacksonargo.com/slides/2015-11-18-introduction-to-the-linux-kernel.html">Introduction To The Linux Kernel</a></li>
+    {% for page in site.pages | where_exp:"page.collection", "slides" %}
+      <li><span>{{ page.date | date_to_string }}</span> &raquo; <a href="{{ page.url }}">{{ page.title }}</a></li>
     {% endfor %}
   </ul>
   

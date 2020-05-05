@@ -11,9 +11,11 @@ Email: *jackson@jacksonargo.com*
 
 ---
 
-#### Software Developer
+#### Software Engineer
 ##### Slack
 ##### Sept 2017 - Present | San Francisco, CA
+
+Build and operate streaming and pub/sub data pipelines that provide visibility into slack's infrastructure and reliably deliver data to slack's data warehouse. Support other engineering teams by helping identify and instrument key metrics in critical subsystems. Deploy and operate distributed systems like Kafka, Zookeeper, and Elasticsearch.
 
 ---
 

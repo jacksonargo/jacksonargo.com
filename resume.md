@@ -5,8 +5,6 @@ title: Resume
 # Alexander Jackson Argo
 Email: *jackson@jacksonargo.com*
 
-[Download a copy](/assets/documents/Resume.pdf)
-
 ## Work Experience
 
 ---

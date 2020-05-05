@@ -87,7 +87,6 @@ Develop an accurate and efficient algorithm for clustering high-dimensional data
 ---
 
 #### Model A Rat Rod
-##### 
 
 Building a 1931 Model A Rat Rod from the ground up. Fabricated brackets, brake lines, chassis components; modified and installed numerous automotive parts.
 

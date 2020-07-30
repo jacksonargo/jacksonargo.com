@@ -1,6 +1,5 @@
 ---
 layout: post
-categories: []
 tags: [vpn, openvpn]
 author: Jackson Argo
 ---

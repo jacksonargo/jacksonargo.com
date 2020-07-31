@@ -26,8 +26,8 @@ I work with multiple teams to provide Linux support and uptime for a wide variet
 
 ---
 
-#### Systems Administrator
-##### Dr. Rob Woods Research Group (University of Georgia)
+#### Systems Administrator (Part Time)
+##### Dr. Rob Woods Research Group @ University of Georgia
 ##### Jan 2012 - Apr 2015 | Athens, GA
 
 System administrator of a network of Linux computers for computational research. Configured and maintained a centralized Bacula backup server, a bind DNS server, and multiple NFS servers. Installed and maintained a Puppet configuration management server and Puppet module development and production environments. Installed and configured Zabbix for system monitoring, and Wordpress for site-wide documentation and electronic notebooks.
@@ -47,7 +47,7 @@ Supervise and instruct seasonal employees. Test cultivation and harvesting metho
 ---
 
 #### University of Georgia
-##### B.S. in Mathematics \\ Cumulative GPA 3.5
+##### B.S. in Mathematics | Cumulative GPA 3.5
 ##### Aug 2011 - Dec 2014 | Athens, GA
 
 Graduated with Honors with a B. S. in Mathematics and minors in Physics and Philosophy. Worked part-time as a Linux systems administrator for the Dr. Rob Wood's Research Group for 3 years. Received Student Employee of the Year award in 2014. Played rugby for the UGARFC for 2 seasons. Served as UGAnime Technology officer for 1 year.

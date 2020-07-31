@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Jackson Argo | Software Developer, Linux Enthusiast, Musician, Weeb</title>
+    <title>Jackson Argo | {{ page.title }}</title>
     <meta property="og:title" content="Jackson Argo">
     <meta property="og:locale" content="en_US">
-    <meta name="description" content="Software Developer, Linux Enthusiast, Musician, Weeb">
-    <meta property="og:description" content="Software Developer, Linux Enthusiast, Musician, Weeb">
+    <meta name="description" content="{{ page.title }}">
+    <meta property="og:description" content="{{ page.title }}">
     <link rel="canonical" href="https://jacksonargo.com/">
     <meta property="og:url" content="https://jacksonargo.com/">
     <meta property="og:site_name" content="Jackson Argo">
@@ -35,6 +35,7 @@
         }
         a {
             color: darkslategray;
+            text-decoration: underline;
         }
         a:hover {
             color: purple;
@@ -44,16 +45,15 @@
 </head>
 <body>
 <div class="container">
-    <div class="row row-cols-1 mt-5">
+    <div class="row row-cols-1 mt-3">
         <div class="col">
             <div class="row">
-                <div class="col-sm-3">
+                <div class="col-lg-4 text-center">
                     <h1><a href="/">Jackson Argo</a></h1>
                     <img class="rounded" src="/logo.jpg" width="250" height="250" alt="Me">
                     <p class="text-muted mt-1 font-italic">Software Developer, Linux Enthusiast, Musician, Weeb</p>
                 </div>
-                <div class="col"></div>
-                <div class="col-sm-8">
+                <div class="col-lg-8">
                     {{ content }}
                 </div>
             </div>

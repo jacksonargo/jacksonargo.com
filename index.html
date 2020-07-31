@@ -4,30 +4,51 @@ title: Jackson Argo
 ---
 
 <div>
-
-    <h1>Articles</h1>
-    <h3>Opinion</h3>
-    <ul class="posts">
+    <h1>Index</h1>
+    <h2>Politics</h2>
+    <table class="posts">
         {% for post in site.categories.Opinion %}
-        <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
+        <tr>
+            <td width="100">{{ post.date | date_to_string }}</td>
+            <td><a href="{{ post.url }}">{{ post.title }}</a></td>
+        </tr>
         {% endfor %}
-    </ul>
+    </table>
 
-    <h3>Presentations</h3>
-    <ul class="posts">
-        <li><span>09 Oct 2019</span> &raquo; <a href="https://www.youtube.com/watch?v=hkmqpNbCJYk">Reliable Logging
-            Pipeline</a></li>
-        <li><span>28 Apr 2016</span> &raquo; <a href="slides/2016-04-28-access-control.pdf">Access Control</a></li>
-        <li><span>18 Nov 2015</span> &raquo; <a href="slides/2015-11-18-introduction-to-the-linux-kernel.html">Introduction
-            To The Linux Kernel</a></li>
-    </ul>
-
-    <h3>Technology</h3>
-    <ul class="posts">
+    <h2>Technology</h2>
+    <table class="posts">
         {% for post in site.categories.Technology %}
-        <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
+        <tr>
+            <td width="100">{{ post.date | date_to_string }}</td>
+            <td><a href="{{ post.url }}">{{ post.title }}
+                {% if post.organization %}<small>{{ post.organization }}</small>{% endif %}
+            </a></td>
+        </tr>
         {% endfor %}
-    </ul>
+    </table>
 
-    <a href="resume">Resume</a>
+    <h2>Presentations</h2>
+    <table class="posts">
+        {% for post in site.data.presentations %}
+        <tr>
+            <td width="100">{{ post.date | date_to_string }}</td>
+            <td><a href="{{ post.url }}">{{ post.title }}
+                {% if post.organization %}<small>{{ post.organization }}</small>{% endif %}
+            </a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Orchestra</h2>
+    <table class="posts">
+        {% for post in site.data.performances %}
+        <tr>
+            <td width="100">{{ post.date | date_to_string }}</td>
+            <td><a href="{{ post.url }}">{{ post.title }}
+                {% if post.organization %}<small>{{ post.organization }}</small>{% endif %}
+            </a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
 </div>

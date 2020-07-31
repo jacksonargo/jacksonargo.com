@@ -1,5 +1,6 @@
 ---
 title: Resume
+layout: default
 ---
 
 # Alexander Jackson Argo

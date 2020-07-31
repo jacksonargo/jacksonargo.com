@@ -3,6 +3,13 @@ title: Resume
 layout: default
 ---
 
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Index</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+    </ol>
+</nav>
+
 # Jackson Argo
 Email: *jackson@jacksonargo.com*
 

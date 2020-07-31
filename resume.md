@@ -3,7 +3,7 @@ title: Resume
 layout: default
 ---
 
-# Alexander Jackson Argo
+# Jackson Argo
 Email: *jackson@jacksonargo.com*
 
 ## Work Experience

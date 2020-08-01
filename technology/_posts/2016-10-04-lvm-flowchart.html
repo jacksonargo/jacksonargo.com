@@ -30,14 +30,32 @@ author: Jackson Argo
         border-bottom-width: medium;
         margin-bottom: 400px;
     }
+
+    a.answer {
+        text-decoration: none;
+        font-family: sans-serif;
+        width: 100%;
+        border: black thin;
+    }
+
+    a.answer:hover {
+        color: whitesmoke;
+        background: #698698;
+    }
 </style>
 
-<div class="row flowchart">
+{% assign answer = "answer btn" %}
+
+<div id="flowchart" class="row flowchart">
     <div class="col">
         <div id="is-vg-full" class="chart-item">
             Is there space in the volume group?
-            [ <a href="#grow-vg">yes</a> | <a href="#is-disk-partitioned">no</a> ]
+            <div class="row">
+                <div class="col"><a href="#grow-vg" class="answer {{ answer }}">Yes</a></div>
+                <div class="col"><a href="#is-disk-partitioned" class="{{ answer }}">No</a></div>
+            </div>
 
+            Use <code>vgs</code> to check the volume group's capacity:
             <pre># vgs
 VG         #PV #LV #SN Attr   VSize  VFree
 volgroup00   2   1   0 wz--n- 19.99g 9.99g</pre>
@@ -45,7 +63,10 @@ volgroup00   2   1   0 wz--n- 19.99g 9.99g</pre>
 
         <div id="is-disk-partitioned" class="chart-item">
             Are the physical volumes in the volume group on partitions?
-            [ <a href="#is-table-full">yes</a> | <a href="#is-device-full">no</a> ]
+            <div class="row">
+                <div class="col"><a href="#is-table-full" class="{{ answer }}">Yes</a></div>
+                <div class="col"><a href="#is-device-full" class="{{ answer }}">No</a></div>
+            </div>
 
             <pre>PV         VG         Fmt  Attr PSize  PFree
 /dev/xvdb1 volgroup00 lvm2 a--  10.00g 10.00g
@@ -78,8 +99,10 @@ Disk Flags:</pre>
 
         <div id="is-device-full" class="chart-item">
             Is the device entire used?
-            [ <a href="#is-device-growable">yes</a> | <a href="#create-partition">no</a> ]
-
+            <div class="row">
+                <div class="col"><a href="#is-device-growable" class="{{ answer }}">Yes</a></div>
+                <div class="col"><a href="#create-partition" class="{{ answer }}">No</a></div>
+            </div>
             <pre># pvs
 PV         VG         Fmt  Attr PSize  PFree
 /dev/xvdc  volgroup01 lvm2 a--  25.00g 25.00g
@@ -95,17 +118,24 @@ Disk Flags:</pre>
 
         <div id="is-device-growable" class="chart-item">
             Can you increase the size of the device?
-            [ <a href="#grow-device">yes</a> | <a href="#add-device">no</a> ]
+            <div class="row">
+                <div class="col"><a href="#grow-device" class="{{ answer }}">Yes</a></div>
+                <div class="col"><a href="#add-device" class="{{ answer }}">No</a></div>
+            </div>
         </div>
 
         <div id="grow-device" class="chart-item">
             Increase the size of the device.
-            [ <a href="#scan-device">continue</a> ]
+            <div class="row">
+                <div class="col"><a href="#scan-device" class="{{ answer }}">Continue</a></div>
+            </div>
         </div>
 
         <div id="scan-device" class="chart-item">
-            Rescan the device so the kernel recognizes the new size.
-            [ <a href="#grow-pv">continue</a> ]
+            Scan the device so the kernel recognizes the new size.
+            <div class="row">
+                <div class="col"><a href="#grow-pv" class="{{ answer }}">Continue</a></div>
+            </div>
 
             <pre># echo 1 > /sys/block/xvdc/device/rescan
 # vgs
@@ -114,15 +144,14 @@ volgroup01   1   0   0 wz--n- 25.00g 25.00g
 
 # pvs
 PV         VG         Fmt  Attr PSize  PFree
-/dev/xvdc  volgroup01 lvm2 a--  25.00g 25.00g
-
- </pre>
+/dev/xvdc  volgroup01 lvm2 a--  25.00g 25.00g</pre>
         </div>
 
-        <hr>
         <div id="grow-pv" class="chart-item">
             Increase the size of the physical volume.
-            [ <a href="#grow-vg">continue</a> ]
+            <div class="row">
+                <div class="col"><a href="#grow-vg" class="{{ answer }}">Continue</a></div>
+            </div>
 
             <pre># pvresize /dev/xvdc
    Physical volume "/dev/xvdc" changed
@@ -139,28 +168,35 @@ PV         VG         Fmt  Attr PSize  PFree
 
         <div id="add-device" class="chart-item">
             Add a new device.
-            [ <a href="#scan-scsi">continue</a> ]
+            <div class="row">
+                <div class="col"><a href="#scan-scsi" class="{{ answer }}">Continue</a></div>
+            </div>
         </div>
 
-        <hr>
         <div id="scan-scsi" class="chart-item">
             Scan the scsi host for the new device.
-            [ <a href="#create-partition-table">continue</a> ]
-
+            <div class="row">
+                <div class="col"><a href="#create-partition-table" class="{{ answer }}">Continue</a></div>
+            </div>
             <pre># echo "- - -" > /sys/class/scsi_host/host0/scan</pre>
         </div>
 
         <div id="create-partition-table" class="chart-item">
-            Create a partition on the new device.
-            [ <a href="#create-partition">continue</a> ]
+            Create a partition on the new device.<br>
+            <div class="row">
+                <div class="col"><a href="#create-partition" class="{{ answer }}">Continue</a></div>
+            </div>
 
             <pre># parted /dev/xvdc mklabel gpt
 # parted /dev/xvdc mkpart primary 0% 100%</pre>
         </div>
 
         <div id="is-table-full" class="chart-item">
-            Is there space available to add a new partition?
-            [ <a href="#create-partition">yes</a> | <a href="#is-device-growable">no</a> ]
+            Is there space available to add a new partition?<br>
+            <div class="row">
+                <div class="col"><a href="#create-partition" class="{{ answer }}">Yes</a></div>
+                <div class="col"><a href="#is-device-growable" class="{{ answer }}">No</a></div>
+            </div>
 
             <pre># parted /dev/xvdb unit gib print free
 Model: Xen Virtual Block Device (xvd)
@@ -176,10 +212,11 @@ Number  Start    End      Size     File system  Name     Flags
         20.0GiB  50.0GiB  30.0GiB  Free Space</pre>
         </div>
 
-        <hr>
         <div id="create-partition" class="chart-item">
-            Use parted to create a new lvm partition.
-            [ <a href="#create-pv">continue</a> ]
+            Use <code>parted</code> to create a new lvm partition.<br>
+            <div class="row">
+                <div class="col"><a href="#create-pv" class="{{ answer }}">Continue</a></div>
+            </div>
 
             <pre># parted /dev/xvdb unit gib print
 Model: Xen Virtual Block Device (xvd)
@@ -210,8 +247,10 @@ Number  Start    End      Size     File system  Name     Flags
         </div>
 
         <div id="create-pv" class="chart-item">
-            Use <code>pvcreate</code> to build a new physical volume on the partition.
-            [ <a href="#grow-vg">continue</a> ]
+            Use <code>pvcreate</code> to build a new physical volume on the partition.<br>
+            <div class="row">
+                <div class="col"><a href="#grow-vg" class="{{ answer }}">Continue</a></div>
+            </div>
 
             <pre># pvs
 PV         VG   Fmt  Attr PSize  PFree
@@ -228,8 +267,10 @@ PV         VG   Fmt  Attr PSize  PFree
         </div>
 
         <div id="grow-vg" class="chart-item">
-            Use vgextend to extend the volume group with the new physical volume.
-            [ <a href="#grow-lv">continue</a> ]
+            Use <code>vgextend</code> to extend the volume group with the new physical volume.<br>
+            <div class="row">
+                <div class="col"><a href="#grow-lv" class="{{ answer }}">Continue</a></div>
+            </div>
 
             <pre># vgs
 VG         #PV #LV #SN Attr   VSize  VFree
@@ -244,8 +285,10 @@ volgroup00   2   1   0 wz--n- 29.99g 19.99g</pre>
         </div>
 
         <div id="grow-lv" class="chart-item">
-            Use lvextend to increase the size of the logical partition.
-            [ <a href="#grow-filesystem">continue</a> ]
+            Use <code>lvextend</code> to increase the size of the logical partition.<br>
+            <div class="row">
+                <div class="col"><a href="#grow-filesystem" class="{{ answer }}">Continue</a></div>
+            </div>
 
             <pre># lvs
 LV    VG         Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
@@ -273,13 +316,18 @@ lvol0 volgroup00 -wi-a----- 29.99g</pre>
         </div>
 
         <div id="grow-filesystem" class="chart-item">
-            Is the filesystem ext4 or xfs?
-            [ <a href="#grow-ext4">ext4</a> | <a href="#grow-xfs">xfs</a> ]
+            Is the filesystem ext4 or xfs?<br>
+            <div class="row">
+                <div class="col"><a href="#grow-ext4" class="{{ answer }}">ext4</a></div>
+                <div class="col"><a href="#grow-ext4" class="{{ answer }}">xfs</a></div>
+            </div>
         </div>
 
         <div id="grow-ext4" class="chart-item">
-            Use resize2fs to resize the filesystem.
-            [ <a href="#done">continue</a> ]
+            Use <code>resize2fs</code> to resize the filesystem.<br>
+            <div class="row">
+                <div class="col"><a href="#done" class="{{ answer }}">Continue</a></div>
+            </div>
 
             <pre># df -h /dev/volgroup00/lvol0
 Filesystem                    Size  Used Avail Use% Mounted on
@@ -297,8 +345,11 @@ Filesystem                    Size  Used Avail Use% Mounted on
         </div>
 
         <div id="grow-xfs" class="chart-item">
-            Use xfs_growfs to resize the filesystem.
-            [ <a href="#done">continue</a> ]
+            Use <code>xfs_growfs</code> to resize the filesystem.<br>
+            <div class="row">
+                <div class="col"><a href="#done" class="{{ answer }}">Continue</a></div>
+            </div>
+
             <pre># df -h /dev/volgroup00/lvol0
 Filesystem                    Size  Used Avail Use% Mounted on
 /dev/mapper/volgroup00-lvol0   20G   45M   19G   1% /mnt/volgroup00/lvol0
@@ -315,7 +366,11 @@ Filesystem                    Size  Used Avail Use% Mounted on
         </div>
 
         <div id="done" class="chart-item">
-            You are done! [ <a href="#is-vg-full">restart</a> ]
+            You are done!<br>
+            <div class="row">
+                <div class="col"><a href="#is-vg-full" class="{{ answer }}">Restart</a></div>
+            </div>
         </div>
     </div>
 </div>
+

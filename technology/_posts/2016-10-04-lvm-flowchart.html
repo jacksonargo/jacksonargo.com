@@ -1,0 +1,321 @@
+---
+layout: post
+title: Add Space to a Filesystem with LVM
+categories: []
+tags: [filesystems, lvm]
+author: Jackson Argo
+---
+
+<style>
+    .flowchart {
+        overflow: auto;
+        height: 400px;
+    }
+
+    pre {
+        border-radius: 5px;
+        background: rgba(49, 53, 56, 0.95);
+        color: whitesmoke;
+        padding: 10px;
+        margin-top: 5px;
+    }
+
+    .chart-item {
+        padding: 10px;
+        border-top-color: #313538;
+        border-top-style: solid;
+        border-top-width: medium;
+        border-bottom-color: #313538;
+        border-bottom-style: solid;
+        border-bottom-width: medium;
+        margin-bottom: 400px;
+    }
+</style>
+
+<div class="row flowchart">
+    <div class="col">
+        <div id="is-vg-full" class="chart-item">
+            Is there space in the volume group?
+            [ <a href="#grow-vg">yes</a> | <a href="#is-disk-partitioned">no</a> ]
+
+            <pre># vgs
+VG         #PV #LV #SN Attr   VSize  VFree
+volgroup00   2   1   0 wz--n- 19.99g 9.99g</pre>
+        </div>
+
+        <div id="is-disk-partitioned" class="chart-item">
+            Are the physical volumes in the volume group on partitions?
+            [ <a href="#is-table-full">yes</a> | <a href="#is-device-full">no</a> ]
+
+            <pre>PV         VG         Fmt  Attr PSize  PFree
+/dev/xvdb1 volgroup00 lvm2 a--  10.00g 10.00g
+/dev/xvdb2 volgroup00 lvm2 a--  10.00g 10.00g
+/dev/xvdc  volgroup01 lvm2 a--  25.00g 25.00g</pre>
+
+            <em>This is a device with partitions:</em>
+
+            <pre># parted /dev/xvdb unit gib print
+Model: Xen Virtual Block Device (xvd)
+Disk /dev/xvdb: 50.0GiB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start    End      Size     File system  Name     Flags
+1      0.00GiB  10.0GiB  10.0GiB               primary  lvm
+2      10.0GiB  20.0GiB  10.0GiB               primary  lvm</pre>
+
+            <em>This is a device without partitions:</em>
+
+            <pre># parted /dev/xvdc unit gib print
+Error: /dev/xvdc: unrecognised disk label
+Model: Xen Virtual Block Device (xvd)
+Disk /dev/xvdc: 50.0GiB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:</pre>
+        </div>
+
+        <div id="is-device-full" class="chart-item">
+            Is the device entire used?
+            [ <a href="#is-device-growable">yes</a> | <a href="#create-partition">no</a> ]
+
+            <pre># pvs
+PV         VG         Fmt  Attr PSize  PFree
+/dev/xvdc  volgroup01 lvm2 a--  25.00g 25.00g
+
+# parted /dev/xvdc unit gib print
+Error: /dev/xvdc: unrecognised disk label
+Model: Xen Virtual Block Device (xvd)
+Disk /dev/xvdc: 50.0GiB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:</pre>
+        </div>
+
+        <div id="is-device-growable" class="chart-item">
+            Can you increase the size of the device?
+            [ <a href="#grow-device">yes</a> | <a href="#add-device">no</a> ]
+        </div>
+
+        <div id="grow-device" class="chart-item">
+            Increase the size of the device.
+            [ <a href="#scan-device">continue</a> ]
+        </div>
+
+        <div id="scan-device" class="chart-item">
+            Rescan the device so the kernel recognizes the new size.
+            [ <a href="#grow-pv">continue</a> ]
+
+            <pre># echo 1 > /sys/block/xvdc/device/rescan
+# vgs
+VG         #PV #LV #SN Attr   VSize  VFree
+volgroup01   1   0   0 wz--n- 25.00g 25.00g
+
+# pvs
+PV         VG         Fmt  Attr PSize  PFree
+/dev/xvdc  volgroup01 lvm2 a--  25.00g 25.00g
+
+ </pre>
+        </div>
+
+        <hr>
+        <div id="grow-pv" class="chart-item">
+            Increase the size of the physical volume.
+            [ <a href="#grow-vg">continue</a> ]
+
+            <pre># pvresize /dev/xvdc
+   Physical volume "/dev/xvdc" changed
+   1 physical volume(s) resized / 0 physical volume(s) not resized
+
+ # pvs
+   PV         VG         Fmt  Attr PSize  PFree
+   /dev/xvdc  volgroup01 lvm2 a--  50.00g 50.00g
+
+ # vgs
+   VG         #PV #LV #SN Attr   VSize  VFree
+   volgroup01   1   0   0 wz--n- 50.00g 50.00g</pre>
+        </div>
+
+        <div id="add-device" class="chart-item">
+            Add a new device.
+            [ <a href="#scan-scsi">continue</a> ]
+        </div>
+
+        <hr>
+        <div id="scan-scsi" class="chart-item">
+            Scan the scsi host for the new device.
+            [ <a href="#create-partition-table">continue</a> ]
+
+            <pre># echo "- - -" > /sys/class/scsi_host/host0/scan</pre>
+        </div>
+
+        <div id="create-partition-table" class="chart-item">
+            Create a partition on the new device.
+            [ <a href="#create-partition">continue</a> ]
+
+            <pre># parted /dev/xvdc mklabel gpt
+# parted /dev/xvdc mkpart primary 0% 100%</pre>
+        </div>
+
+        <div id="is-table-full" class="chart-item">
+            Is there space available to add a new partition?
+            [ <a href="#create-partition">yes</a> | <a href="#is-device-growable">no</a> ]
+
+            <pre># parted /dev/xvdb unit gib print free
+Model: Xen Virtual Block Device (xvd)
+Disk /dev/xvdb: 50.0GiB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start    End      Size     File system  Name     Flags
+        0.00GiB  0.00GiB  0.00GiB  Free Space
+ 1      0.00GiB  10.0GiB  10.0GiB               primary  lvm
+ 2      10.0GiB  20.0GiB  10.0GiB               primary  lvm
+        20.0GiB  50.0GiB  30.0GiB  Free Space</pre>
+        </div>
+
+        <hr>
+        <div id="create-partition" class="chart-item">
+            Use parted to create a new lvm partition.
+            [ <a href="#create-pv">continue</a> ]
+
+            <pre># parted /dev/xvdb unit gib print
+Model: Xen Virtual Block Device (xvd)
+Disk /dev/xvdb: 50.0GiB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start    End      Size     File system  Name     Flags
+ 1      0.00GiB  10.0GiB  10.0GiB               primary  lvm
+ 2      10.0GiB  20.0GiB  10.0GiB               primary  lvm
+
+# parted /dev/xvdb mkpart primary 20GiB 30GiB
+
+# parted /dev/xvdb set 3 lvm on
+
+# parted /dev/xvdb unit gib print
+Model: Xen Virtual Block Device (xvd)
+Disk /dev/xvdb: 50.0GiB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start    End      Size     File system  Name     Flags
+ 1      0.00GiB  10.0GiB  10.0GiB               primary  lvm
+ 2      10.0GiB  20.0GiB  10.0GiB               primary  lvm
+ 3      20.0GiB  30.0GiB  10.0GiB               primary  lvm</pre>
+        </div>
+
+        <div id="create-pv" class="chart-item">
+            Use <code>pvcreate</code> to build a new physical volume on the partition.
+            [ <a href="#grow-vg">continue</a> ]
+
+            <pre># pvs
+PV         VG   Fmt  Attr PSize  PFree
+/dev/xvdb1      lvm2 ---  10.00g 10.00g
+/dev/xvdb2      lvm2 ---  10.00g 10.00g
+
+# pvcreate /dev/xvdb3
+
+# pvs
+PV         VG   Fmt  Attr PSize  PFree
+/dev/xvdb1      lvm2 ---  10.00g 10.00g
+/dev/xvdb2      lvm2 ---  10.00g 10.00g
+/dev/xvdb3      lvm2 ---  10.00g 10.00g</pre>
+        </div>
+
+        <div id="grow-vg" class="chart-item">
+            Use vgextend to extend the volume group with the new physical volume.
+            [ <a href="#grow-lv">continue</a> ]
+
+            <pre># vgs
+VG         #PV #LV #SN Attr   VSize  VFree
+volgroup00   2   1   0 wz--n- 19.99g 9.99g
+
+# vgextend volgroup00 /dev/xvdb3
+Volume group "volgroup00" successfully extended
+
+# vgs
+VG         #PV #LV #SN Attr   VSize  VFree
+volgroup00   2   1   0 wz--n- 29.99g 19.99g</pre>
+        </div>
+
+        <div id="grow-lv" class="chart-item">
+            Use lvextend to increase the size of the logical partition.
+            [ <a href="#grow-filesystem">continue</a> ]
+
+            <pre># lvs
+LV    VG         Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+lvol0 volgroup00 -wi-a----- 10.00g</pre>
+
+            <em>We can extend with a specific size:</em>
+
+            <pre># lvextend -L +5GiB /dev/mapper/volgroup00-lvol0
+Size of logical volume volgroup00/lvol0 changed from 10.00 GiB (2560 extents) to 15.00 GiB (3840 extents).
+Logical volume lvol0 successfully resized.
+
+# lvs
+LV    VG         Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+lvol0 volgroup00 -wi-a----- 15.00g</pre>
+
+            <em>We can fill the entire device:</em>
+
+            <pre># lvextend -l +100%FREE /dev/mapper/volgroup00-lvol0
+Size of logical volume volgroup00/lvol0 changed from 15.00 GiB (3840 extents) to 29.99 GiB (7677 extents).
+Logical volume lvol0 successfully resized.
+
+# lvs
+LV    VG         Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+lvol0 volgroup00 -wi-a----- 29.99g</pre>
+        </div>
+
+        <div id="grow-filesystem" class="chart-item">
+            Is the filesystem ext4 or xfs?
+            [ <a href="#grow-ext4">ext4</a> | <a href="#grow-xfs">xfs</a> ]
+        </div>
+
+        <div id="grow-ext4" class="chart-item">
+            Use resize2fs to resize the filesystem.
+            [ <a href="#done">continue</a> ]
+
+            <pre># df -h /dev/volgroup00/lvol0
+Filesystem                    Size  Used Avail Use% Mounted on
+/dev/mapper/volgroup00-lvol0   20G   45M   19G   1% /mnt/volgroup00/lvol0
+
+# resize2fs /dev/volgroup00/lvol0
+resize2fs 1.42.9 (28-Dec-2013)
+Filesystem at /dev/volgroup00/lvol0 is mounted on /mnt/volgroup00/lvol0; on-line resizing required
+old_desc_blocks = 3, new_desc_blocks = 4
+The filesystem on /dev/volgroup00/lvol0 is now 7859200 blocks long.
+
+# df -h /dev/volgroup00/lvol0
+Filesystem                    Size  Used Avail Use% Mounted on
+/dev/mapper/volgroup00-lvol0   30G   44M   28G   1% /mnt/volgroup00/lvol0</pre>
+        </div>
+
+        <div id="grow-xfs" class="chart-item">
+            Use xfs_growfs to resize the filesystem.
+            [ <a href="#done">continue</a> ]
+            <pre># df -h /dev/volgroup00/lvol0
+Filesystem                    Size  Used Avail Use% Mounted on
+/dev/mapper/volgroup00-lvol0   20G   45M   19G   1% /mnt/volgroup00/lvol0
+
+# resize2fs /dev/volgroup00/lvol0
+resize2fs 1.42.9 (28-Dec-2013)
+Filesystem at /dev/volgroup00/lvol0 is mounted on /mnt/volgroup00/lvol0; on-line resizing required
+old_desc_blocks = 3, new_desc_blocks = 4
+The filesystem on /dev/volgroup00/lvol0 is now 7859200 blocks long.
+
+# df -h /dev/volgroup00/lvol0
+Filesystem                    Size  Used Avail Use% Mounted on
+/dev/mapper/volgroup00-lvol0   30G   44M   28G   1% /mnt/volgroup00/lvol0</pre>
+        </div>
+
+        <div id="done" class="chart-item">
+            You are done! [ <a href="#is-vg-full">restart</a> ]
+        </div>
+    </div>
+</div>

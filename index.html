@@ -8,13 +8,9 @@ title: Software Developer, Linux Enthusiast, Musician, Weeb
         font-size: large;
     }
 
-    .date {
+    td.date {
         font-size: medium;
-    }
-
-    table.posts {
-        border-bottom-width: thin;
-        border-bottom-color: #1c1e20;
+        width: 100px;
     }
 
     .organization {
@@ -25,74 +21,40 @@ title: Software Developer, Linux Enthusiast, Musician, Weeb
 
 <div class="index">
     <div class="row mb-3">
-        <div class="col">
-            <h1>// Index</h1>
-        </div>
+        <div class="col"><h1>// Index</h1></div>
     </div>
     <div class="row">
-        <div class="col-sm-6 mb-2 flex">
-            <h2>Politics</h2>
-            <table class="table table-sm table-borderless">
-                {% for post in site.categories.opinion %}
-                <tr>
-                    <td width="100" class="date">{{ post.date | date_to_string }}</td>
-                    <td><a href="{{ post.url }}">{{ post.title }}
-                        {% if post.organization %}
-                        <div class="organization">{{ post.organization }}</div>
-                        {% endif %}
-                    </a></td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
+        {% assign topics = "Politics, Presentations, Technology, Orchestra" | split: ", " %}
+        {% for topic in topics %}
+            {% case topic %}
+                {% when "Politics" %}
+                    {% assign posts = site.categories.opinion %}
+                {% when "Presentations" %}
+                    {% assign posts = site.data.presentations %}
+                {% when "Technology" %}
+                    {% assign posts = site.categories.technology %}
+                {% when "Orchestra" %}
+                    {% assign posts = site.data.performances %}
+                {% else %}
+                    {% continue %}
+            {% endcase %}
 
-        <div class="col-sm-6 mb-2">
-            <h2>Presentations</h2>
-            <table class="table table-sm table-borderless">
-                {% for post in site.data.presentations %}
-                <tr>
-                    <td width="100" class="date">{{ post.date | date_to_string }}</td>
-                    <td><a href="{{ post.url }}">{{ post.title }}
-                        {% if post.organization %}
-                        <div class="organization">{{ post.organization }}</div>
-                        {% endif %}
-                    </a></td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-
-        <div class="col-sm-6 mb-2">
-            <h2>Technology</h2>
-            <table class="table table-sm table-borderless">
-                {% for post in site.categories.technology %}
-                <tr>
-                    <td width="100" class="date">{{ post.date | date_to_string }}</td>
-                    <td><a href="{{ post.url }}">{{ post.title }}
-                        {% if post.organization %}
-                        <div class="organization">{{ post.organization }}</div>
-                        {% endif %}
-                    </a></td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-
-        <div class="col-sm-6 mb-2">
-            <h2>Orchestra</h2>
-            <table class="table table-sm table-borderless">
-                {% for post in site.data.performances %}
-                <tr>
-                    <td width="100" class="date">{{ post.date | date_to_string }}</td>
-                    <td><a href="{{ post.url }}">{{ post.title }}
-
-                        {% if post.organization %}
-                        <div class="organization">{{ post.organization }}</div>
-                        {% endif %}
-                    </a></td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
+            <div class="col-sm-6 mb-2 flex">
+                <h2>{{ topic }}</h2>
+                <table class="table table-sm table-borderless">
+                    {% for post in posts %}
+                        <tr>
+                            <td class="date">{{ post.date | date_to_string }}</td>
+                            <td><a href="{{ post.url }}">{{ post.title }}
+                                    {% if post.organization %}
+                                        <div class="organization">{{ post.organization }}</div>
+                                    {% endif %}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endfor %}
     </div>
 </div>

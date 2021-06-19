@@ -4,7 +4,7 @@ Just two weeks ago, Russian scientists [published a paper](https://www.cell.com/
 
 *A living bdelloid rotifer from 24,000-year-old Arctic permafrost.*
 
-![image](https://user-images.githubusercontent.com/7391437/122631311-ffca8180-d098-11eb-83a4-4b8fab588044.png)
+![image](https://user-images.githubusercontent.com/7391437/122631848-ba0fb800-d09c-11eb-8ac1-ba3d720ee02d.png)
 
 It’s not hard to imagine that several hundred years from now, historians will be analyzing the wealth of data collected by today’s technology, regardless of the privacy policies we may or may not have read. Ortiz’s remains only provide a snapshot of his last moments, and this limited information has left scientists many unanswered questions about his life. Similarly, today’s data does not capture a complete picture of our world and some may even be misleading. Historians are no stranger to limited or misleading data, and are constantly filling in the gaps and revising their understanding as new information surfaces. But, what kind of biases will historians face when looking at these massive datasets of personal and private information?
 
@@ -28,7 +28,7 @@ In the article [_Excavating AI_](https://excavating.ai/), Kate Crawford and Trev
 
 *A Venezuelan Troupial in Aruba*
 
-![image](https://user-images.githubusercontent.com/7391437/122631376-58018380-d099-11eb-9420-eaaf693b82db.png)
+![image](https://user-images.githubusercontent.com/7391437/122631844-aa906f00-d09c-11eb-8630-f60b7dbd1474.png)
 
 ## Wrapping Up
 

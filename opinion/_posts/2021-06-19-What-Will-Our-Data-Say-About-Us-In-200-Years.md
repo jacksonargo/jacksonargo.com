@@ -27,3 +27,14 @@ In the article [_Excavating AI_](https://excavating.ai/), Kate Crawford and Trev
 200 years from now, historians will undoubtedly have access to massive amounts of data to study, but they will face the same historical biases and misinformation that plague historians today. In the meantime, we can focus on protecting our own online privacy and addressing biases and misinformation in our data to make future historians’ job just a little easier.
 
 Thank you for reading!
+
+## References
+
+* https://www.cell.com/current-biology/fulltext/S0960-9822(21)00624-2
+* https://www.nationalgeographic.com/history/article/131016-otzi-ice-man-mummy-five-facts
+* https://www.hhs.gov/ohrp/regulations-and-policy/belmont-report/read-the-belmont-report/index.html
+* https://hbr.org/2013/04/the-hidden-biases-in-big-data
+* https://gdpr.eu/right-to-be-forgotten/
+* https://www.ftc.gov/tips-advice/business-center/privacy-and-security/children%27s-privacy
+* https://www.wired.com/story/replika-open-source/
+* https://excavating.ai/

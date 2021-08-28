@@ -21,9 +21,7 @@ Email: *jackson@jacksonargo.com*
 ##### Slack
 ##### June 2020 - Present | New York, New York
 
-Build spark and hive etl pipelines to provide Slack customers with access to their own usage metrics.
-Meet with customers to help understand their metrics needs.
-Connect Slack's data warehouse with secure data serving solutions such as Solr and homegrown key-value services.
+Build spark and hive etl pipelines to provide Slack customers with access to their own usage metrics. Meet with customers to help understand their metrics needs. Connect Slack’s data warehouse with secure data serving solutions such as Solr and homegrown key-value services. Collaborate between Slack's data teams and product teams to produce the best results we can!
 
 ---
 

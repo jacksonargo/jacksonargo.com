@@ -17,11 +17,21 @@ Email: *jackson@jacksonargo.com*
 
 ---
 
-#### Software Engineer
+#### Data Engineer - Enterprise
 ##### Slack
-##### Sept 2017 - Present | San Francisco, CA
+##### June 2020 - Present | New York, New York
 
-Build and operate streaming and pub/sub data pipelines that provide visibility into slack's infrastructure and reliably deliver data to slack's data warehouse. Support other engineering teams by helping identify and instrument key metrics in critical subsystems. Deploy and operate distributed systems like Kafka, Zookeeper, and Elasticsearch.
+Build spark and hive etl pipelines to provide Slack customers with access to their own usage metrics.
+Meet with customers to help understand their metrics needs.
+Connect Slack's data warehouse with secure data serving solutions such as Solr and homegrown key-value services.
+
+---
+
+#### Software Engineer - Visibility
+##### Slack
+##### Sept 2017 - June 2020 | San Francisco, CA
+
+Build and operate streaming and pub/sub data pipelines that provide visibility into slack's infrastructure and reliably deliver data to slack's data warehouse. Support other engineering teams by helping identify and instrument key metrics in critical subsystems. Deploy and operate distributed data systems like Kafka, Zookeeper, and Elasticsearch.
 
 ---
 
